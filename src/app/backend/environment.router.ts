@@ -24,11 +24,10 @@ export class EnvironmentRouter{
         ws.onmessage = (event) => {
             let d = JSON.parse(event.data)
             EnvironmentRouter.webSocket$.next(d)
-            console.log("Got message", d)
             if(instanceOfEnvironment(d))
                 EnvironmentRouter.environments$.next(d) 
         };
-        console.log("Web socke connected!!")
+        
         return EnvironmentRouter.webSocket$
     }
 

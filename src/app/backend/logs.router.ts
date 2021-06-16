@@ -23,11 +23,10 @@ export class LogsRouter{
         ws.onmessage = (event) => {
             let d = JSON.parse(event.data)
             LogsRouter.webSocket$.next(d)
-            console.log("Got log message", d)
             //if(instanceOfLog(d))
             LogsRouter.logs$.next(d) 
         };
-        console.log("Logs Web socket connected!!")
+        
         return LogsRouter.webSocket$
     }
 }
