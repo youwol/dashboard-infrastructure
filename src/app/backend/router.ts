@@ -1,6 +1,7 @@
 import { Observable, ReplaySubject } from "rxjs";
 import { LogMessage } from "../logs-view";
 import { EnvironmentRouter } from "./environment.router";
+import { K8sDashboardRouter } from "./k8s-dashboard.router";
 import { LogsRouter } from "./logs.router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
@@ -31,4 +32,5 @@ export class Backend {
 
     static environment = EnvironmentRouter
     static logs = LogsRouter
+    static k8sDashboard = K8sDashboardRouter
 }

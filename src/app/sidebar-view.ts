@@ -5,6 +5,7 @@ import { AppState } from './app-state'
 import { Backend } from './backend/router'
 import { GeneralState } from './environment/cluster.view'
 import { Environment } from './environment/models'
+import { DeploymentStatus, SanityEnum } from './models'
 import { PanelId, tabsDisplayInfo } from './panels-info'
 
 
@@ -41,6 +42,13 @@ export class SideBarView implements VirtualDOM{
                         'fas fa-users-cog my-2',
                         this.state.environmentChildren$,
                         this.state.selected$
+                    ),
+                    sectionGeneric(
+                        'K8s dashboard',
+                        'fas fa-tachometer-alt my-2',
+                        this.state.k8sDashboardChildren$,
+                        this.state.selected$,
+                        this.state.k8sDashboardState.status$
                     )
                 ]
             }
@@ -50,18 +58,41 @@ export class SideBarView implements VirtualDOM{
 }
 
 
+
 function sectionTitle( 
     name: string,
     classes: string,
     sectionSelected$:Observable<boolean>,
-    enabled: boolean = true
+    status$?: Observable<DeploymentStatus> 
     ) : VirtualDOM {
+
+
+    let statusClass = status$ 
+        ? attr$( 
+            status$,
+            (status:DeploymentStatus) => {
+                let classesDict = {
+                    [SanityEnum.SANE] : "fv-text-success fas fa-check",
+                    [SanityEnum.WARNINGS] : "fv-text-focus fas fa-exclamation",
+                    [SanityEnum.BROKEN] : "fv-text-error fas fa-times",
+                }
+                if(status.pending){
+                    return 'fv-text-primary fas fa-cog fa-spin'
+                }
+                if(!status.installed){
+                    return 'fv-text-disabled fas fa-times'
+                }
+                return classesDict[status.sanity]
+            },
+            {wrapper: (d) => d+ "  px-2" }
+        )
+        : ""
 
     return {   
         class: attr$( 
             sectionSelected$,
             (selected) => selected ? 'fv-text-focus' : '',
-            {wrapper: (d) => d+ "  d-flex align-items-center fa-2x "+ (enabled? 'fv-pointer': '')}
+            {wrapper: (d) => d+ "  d-flex align-items-center fa-2x fv-pointer" }
         ),
         children:[
             {
@@ -69,7 +100,10 @@ function sectionTitle(
                 class: classes+" pr-3"
             },
             {
-                tag:'h4', innerText:name, style:{'user-select': 'none'}
+                innerText:name, style:{'user-select': 'none', 'font-size':'x-large'}
+            },
+            {
+                class: statusClass
             }
         ]
     }
@@ -113,16 +147,16 @@ function sectionGeneric(
     classes: string, 
     targets$: Observable<Array<PanelId>>, 
     selected$:Subject<PanelId>, 
-    enabled: boolean =true){
+    status$?: Observable<DeploymentStatus>){
 
     let sectionSelected$ = selected$.pipe(
         mergeMap( selected => targets$.pipe( map( (targets) => targets.includes(selected)) ) )
     )
 
     return {
-        class: 'my-2 '+(enabled ? '' : 'fv-text-disabled'),
+        class: 'my-2 ',
         children:[
-            sectionTitle(name, classes, sectionSelected$, enabled),
+            sectionTitle(name, classes, sectionSelected$, status$ ),
             subSectionsList(targets$, selected$)
         ],
         //onclick:()=> selected$.next(targets[0])
