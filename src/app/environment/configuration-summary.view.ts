@@ -1,4 +1,4 @@
-import { k8s } from "../k8s-models"
+import { k8s } from "../models"
 import { DataTreeView } from "../views/data-tree.view"
 import { Environment } from "./models"
 
@@ -21,6 +21,22 @@ export function clusterSummary(environment: Environment){
                     },
                     {   class:'px-2 fv-text-focus',
                         innerText: environment.deploymentConfiguration.general.contextName
+                    },
+                ]
+            },
+            {
+                tag:'hr', class:'fv-color-primary'
+            },
+            {
+                class:'d-flex',
+                children:[
+                    {
+                        innerText: "K8s API proxy"
+                    },
+                    {   tag:'a',
+                        class:'px-2 fv-text-focus',
+                        innerText: environment.clusterInfo.k8sApiProxy,
+                        href:environment.clusterInfo.k8sApiProxy
                     },
                 ]
             },
