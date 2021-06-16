@@ -49,6 +49,13 @@ export class SideBarView implements VirtualDOM{
                         this.state.k8sDashboardChildren$,
                         this.state.selected$,
                         this.state.k8sDashboardState.status$
+                    ),
+                    sectionGeneric(
+                        'Postgre SQL',
+                        'fas fa-database my-2',
+                        this.state.postgreSqlChildren$,
+                        this.state.selected$,
+                        this.state.postgreSqlState.status$
                     )
                 ]
             }
