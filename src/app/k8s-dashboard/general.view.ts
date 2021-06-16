@@ -62,6 +62,7 @@ function installView(){
     return {
         class: 'fv-pointer p-2 border rounded fv-text-focus fv-hover-bg-background-alt',
         innerText: 'Install',
+        style: {width:'fit-content'},
         onclick: (ev) => {
             Backend.k8sDashboard.triggerInstall()
         }
