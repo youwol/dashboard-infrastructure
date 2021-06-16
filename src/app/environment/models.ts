@@ -1,4 +1,4 @@
-import {k8s} from '../k8s-models'
+import {k8s} from '../models'
 
 export interface K8sContext{
 
@@ -11,6 +11,7 @@ export interface ClusterInfo{
 
     accessToken: string
     nodes: Array<k8s.Node>
+    k8sApiProxy: string
 }
 
 export interface Environment {
