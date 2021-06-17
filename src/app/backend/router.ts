@@ -27,7 +27,9 @@ export class Backend {
     static setHeaders(headers: {[key:string]:string}){
         Backend.headers=headers
         EnvironmentRouter.headers=headers
-        LogsRouter.headers=headers
+        LogsRouter.headers=headers,
+        K8sDashboardRouter.headers=headers,
+        PostgreSqlRouter.headers=headers,
     }
 
 
