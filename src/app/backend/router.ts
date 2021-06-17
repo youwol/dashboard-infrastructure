@@ -2,6 +2,7 @@ import { Observable, ReplaySubject } from "rxjs";
 import { LogMessage } from "../logs-view";
 import { EnvironmentRouter } from "./environment.router";
 import { K8sDashboardRouter } from "./k8s-dashboard.router";
+import { KongRouter } from "./kong.router";
 import { LogsRouter } from "./logs.router";
 import { PostgreSqlRouter } from "./postgre-sql.router";
 
@@ -30,6 +31,7 @@ export class Backend {
         LogsRouter.headers=headers,
         K8sDashboardRouter.headers=headers,
         PostgreSqlRouter.headers=headers,
+        KongRouter.headers=headers
     }
 
 
@@ -37,4 +39,5 @@ export class Backend {
     static logs = LogsRouter
     static k8sDashboard = K8sDashboardRouter
     static postgreSql = PostgreSqlRouter
+    static kong = KongRouter
 }

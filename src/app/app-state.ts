@@ -2,6 +2,7 @@ import { BehaviorSubject } from "rxjs"
 import { map } from "rxjs/operators"
 import { EnvironmentState, EnvironmentView } from "./environment/environment.view"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
+import { KongState, KongView } from "./kong/kong.view"
 import { PanelId, tabsDisplayInfo } from "./panels-info"
 import { PostgreSqlState, PostgreSqlView } from "./postgre-sql/postgre-sql.view"
 
@@ -15,6 +16,9 @@ export class AppState{
     ])    
     public readonly postgreSqlChildren$ = new BehaviorSubject([
         PanelId.PostgreSqlGeneral
+    ]) 
+    public readonly kongChildren$ = new BehaviorSubject([
+        PanelId.KongGeneral
     ])
 
     public readonly selected$ = new BehaviorSubject<PanelId>(PanelId.ConfigurationCluster)
@@ -22,6 +26,7 @@ export class AppState{
     configurationState = new EnvironmentState(this.selected$)
     k8sDashboardState = new K8sDashboardState(this.selected$)
     postgreSqlState = new PostgreSqlState(this.selected$)
+    kongState = new KongState(this.selected$)
 
 
     panelViewFactory$ = this.selected$.pipe(
@@ -35,6 +40,9 @@ export class AppState{
             }
             if ([PanelId.PostgreSqlGeneral].includes(selected)){
                 return new PostgreSqlView(this.postgreSqlState)
+            }
+            if ([PanelId.KongGeneral].includes(selected)){
+                return new KongView(this.kongState)
             }
         })
     )
