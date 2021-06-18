@@ -36,6 +36,9 @@ export class GeneralView implements VirtualDOM {
             {
                 class: 'flex-grow-1 w-100 h-100',
                 children: [
+                    {
+                        innerText: "Kong general"
+                    },
                     child$(
                         GeneralState.status$,
                         (status: KongStatus) => {

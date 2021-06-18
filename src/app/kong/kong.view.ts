@@ -5,10 +5,12 @@ import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
 import { GeneralState, GeneralView } from './general.view'
 import { Status as KongStatus} from '../backend/kong.router'
+import { KongAdminState, KongAdminView } from './kong-admin.view'
 
 
 let titles = {
-    [PanelId.KongGeneral] :'General'
+    [PanelId.KongGeneral] :'General',
+    [PanelId.KongAdmin] :'Kong admin'
 }
 
 export class KongState{
@@ -16,6 +18,7 @@ export class KongState{
     status$ = new Subject<KongStatus>()
 
     generalState = new GeneralState()
+    kongAdminState = new KongAdminState()
     
     constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
         Backend.kong.connectWs()
@@ -36,6 +39,16 @@ class GeneralTabData extends Tabs.TabData{
     }
 }
 
+class KongAdminTabData extends Tabs.TabData{
+    
+    constructor(public readonly kongAdminState){
+        super( PanelId.KongAdmin, titles[PanelId.KongAdmin])
+    }
+    view() {
+        return new KongAdminView(this.kongAdminState)
+    }
+}
+
 
 
 export class KongView implements VirtualDOM{
@@ -48,7 +61,8 @@ export class KongView implements VirtualDOM{
     constructor(state:KongState){
 
         let tabsData = [
-            new GeneralTabData(state.generalState)
+            new GeneralTabData(state.generalState),
+            new KongAdminTabData(state.kongAdminState),            
         ]
         
         this.children = [

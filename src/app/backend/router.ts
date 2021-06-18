@@ -31,7 +31,7 @@ export class Backend {
         LogsRouter.headers=headers,
         K8sDashboardRouter.headers=headers,
         PostgreSqlRouter.headers=headers,
-        KongRouter.headers=headers
+        KongRouter.headers=headers,
     }
 
 

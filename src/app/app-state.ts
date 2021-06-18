@@ -18,7 +18,8 @@ export class AppState{
         PanelId.PostgreSqlGeneral
     ]) 
     public readonly kongChildren$ = new BehaviorSubject([
-        PanelId.KongGeneral
+        PanelId.KongGeneral,
+        PanelId.KongAdmin
     ])
 
     public readonly selected$ = new BehaviorSubject<PanelId>(PanelId.ConfigurationCluster)
@@ -41,7 +42,7 @@ export class AppState{
             if ([PanelId.PostgreSqlGeneral].includes(selected)){
                 return new PostgreSqlView(this.postgreSqlState)
             }
-            if ([PanelId.KongGeneral].includes(selected)){
+            if ([PanelId.KongGeneral, PanelId.KongAdmin].includes(selected)){
                 return new KongView(this.kongState)
             }
         })
