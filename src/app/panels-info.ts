@@ -8,6 +8,7 @@ export enum PanelId{
     PostgreSqlGeneral = "postgreSql.general",
     KongGeneral = "kong.general",
     KongAdmin = "kong.admin",
+    MinioGeneral = "minio.general"
 }
 
 export let tabsDisplayInfo = {
@@ -16,5 +17,6 @@ export let tabsDisplayInfo = {
     [PanelId.PostgreSqlGeneral]: { title: "General", enabled: true},
     [PanelId.KongGeneral]: { title: "General", enabled: true},
     [PanelId.KongAdmin]: { title: "Admin", enabled: true},
+    [PanelId.MinioGeneral]: { title: "General", enabled: true},
 }
 

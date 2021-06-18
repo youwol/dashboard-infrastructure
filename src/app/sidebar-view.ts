@@ -63,6 +63,13 @@ export class SideBarView implements VirtualDOM{
                         this.state.kongChildren$,
                         this.state.selected$,
                         this.state.kongState.status$
+                    ),
+                    sectionGeneric(
+                        'Minio',
+                        'fas fa-database my-2',
+                        this.state.minioChildren$,
+                        this.state.selected$,
+                        this.state.minioState.status$
                     )
                 ]
             }

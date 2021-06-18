@@ -3,6 +3,7 @@ import { map } from "rxjs/operators"
 import { EnvironmentState, EnvironmentView } from "./environment/environment.view"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
 import { KongState, KongView } from "./kong/kong.view"
+import { MinioState, MinioView } from "./minio/minio.view"
 import { PanelId, tabsDisplayInfo } from "./panels-info"
 import { PostgreSqlState, PostgreSqlView } from "./postgre-sql/postgre-sql.view"
 
@@ -21,6 +22,9 @@ export class AppState{
         PanelId.KongGeneral,
         PanelId.KongAdmin
     ])
+    public readonly minioChildren$ = new BehaviorSubject([
+        PanelId.MinioGeneral
+    ]) 
 
     public readonly selected$ = new BehaviorSubject<PanelId>(PanelId.ConfigurationCluster)
 
@@ -28,6 +32,7 @@ export class AppState{
     k8sDashboardState = new K8sDashboardState(this.selected$)
     postgreSqlState = new PostgreSqlState(this.selected$)
     kongState = new KongState(this.selected$)
+    minioState = new MinioState(this.selected$)
 
 
     panelViewFactory$ = this.selected$.pipe(
@@ -44,6 +49,9 @@ export class AppState{
             }
             if ([PanelId.KongGeneral, PanelId.KongAdmin].includes(selected)){
                 return new KongView(this.kongState)
+            }
+            if ([PanelId.MinioGeneral].includes(selected)){
+                return new MinioView(this.minioState)
             }
         })
     )

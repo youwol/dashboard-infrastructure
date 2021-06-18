@@ -4,6 +4,7 @@ import { EnvironmentRouter } from "./environment.router";
 import { K8sDashboardRouter } from "./k8s-dashboard.router";
 import { KongRouter } from "./kong.router";
 import { LogsRouter } from "./logs.router";
+import { MinioRouter } from "./minio.router";
 import { PostgreSqlRouter } from "./postgre-sql.router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
@@ -32,6 +33,7 @@ export class Backend {
         K8sDashboardRouter.headers=headers,
         PostgreSqlRouter.headers=headers,
         KongRouter.headers=headers,
+        MinioRouter.headers=headers
     }
 
 
@@ -40,4 +42,5 @@ export class Backend {
     static k8sDashboard = K8sDashboardRouter
     static postgreSql = PostgreSqlRouter
     static kong = KongRouter
+    static minio = MinioRouter
 }
