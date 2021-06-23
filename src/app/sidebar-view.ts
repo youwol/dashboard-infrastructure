@@ -39,37 +39,38 @@ export class SideBarView implements VirtualDOM{
                     },
                     sectionGeneric(
                         'Environment',
-                        'fas fa-users-cog my-2',
+                        '/api/youwol-infra/environment/icon',
                         this.state.environmentChildren$,
                         this.state.selected$
                     ),
                     sectionGeneric(
                         'K8s dashboard',
-                        'fas fa-tachometer-alt my-2',
+                        '/api/youwol-infra/k8s-dashboard/icon',
                         this.state.k8sDashboardChildren$,
                         this.state.selected$,
                         this.state.k8sDashboardState.status$
                     ),
                     sectionGeneric(
                         'Postgre SQL',
-                        'fas fa-database my-2',
+                        '/api/youwol-infra/postgre-sql/icon',
                         this.state.postgreSqlChildren$,
                         this.state.selected$,
                         this.state.postgreSqlState.status$
                     ),
                     sectionGeneric(
                         'Kong',
-                        'fas fa-arrows-alt my-2',
+                        '/api/youwol-infra/kong/icon',
                         this.state.kongChildren$,
                         this.state.selected$,
                         this.state.kongState.status$
                     ),
                     sectionGeneric(
                         'Minio',
-                        'fas fa-database my-2',
+                        '/api/youwol-infra/minio/icon',
                         this.state.minioChildren$,
                         this.state.selected$,
                         this.state.minioState.status$
+                    ),
                     sectionGeneric(
                         'Scylla',
                         '/api/youwol-infra/scylla/icon',
@@ -109,7 +110,7 @@ export class SideBarView implements VirtualDOM{
 
 function sectionTitle( 
     name: string,
-    classes: string,
+    url: string,
     sectionSelected$:Observable<boolean>,
     status$?: Observable<DeploymentStatus> 
     ) : VirtualDOM {
@@ -144,8 +145,10 @@ function sectionTitle(
         ),
         children:[
             {
-                tag:'i',
-                class: classes+" pr-3"
+                tag:'img',
+                src: url,
+                style:{width:"50px"},
+                class: " pr-3"
             },
             {
                 innerText:name, style:{'user-select': 'none', 'font-size':'x-large'}
@@ -192,7 +195,7 @@ function tabSubSection( target: PanelId, selected$:Subject<PanelId>) : VirtualDO
 
 function sectionGeneric(
     name: string, 
-    classes: string, 
+    url: string, 
     targets$: Observable<Array<PanelId>>, 
     selected$:Subject<PanelId>, 
     status$?: Observable<DeploymentStatus>){
@@ -204,7 +207,7 @@ function sectionGeneric(
     return {
         class: 'my-2 ',
         children:[
-            sectionTitle(name, classes, sectionSelected$, status$ ),
+            sectionTitle(name, url, sectionSelected$, status$ ),
             subSectionsList(targets$, selected$)
         ],
         //onclick:()=> selected$.next(targets[0])
