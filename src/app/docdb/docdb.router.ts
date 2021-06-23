@@ -1,7 +1,7 @@
 import { ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
+import { EnvironmentRouter } from "../environment/environment.router"
 
 
 export interface Status{
@@ -37,22 +37,33 @@ export class DocDbRouter{
                 DocDbRouter.status$.next(d as Status) 
         };
         
-        DocDbRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            DocDbRouter.triggerStatus()
-        })
         return DocDbRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${DocDbRouter.urlBase}/status`, { headers: DocDbRouter.headers })
+    static watch(namespace: string) {
+
+        DocDbRouter.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            DocDbRouter.triggerStatus(namespace)
+        })
+        
+        return DocDbRouter.status$.pipe(
+            filter( (message: any) => message.namespace == namespace)
+        )
+    }
+
+    static triggerStatus(namespace: string){
+
+        let r = new Request( `${DocDbRouter.urlBase}/${namespace}/status`, { headers: DocDbRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(){
-        let r = new Request( `${DocDbRouter.urlBase}/install`, { headers: DocDbRouter.headers })
+    static triggerInstall(namespace: string, body ){
+
+        let r = new Request( `${DocDbRouter.urlBase}/${namespace}/install`, 
+        { method: 'POST', body: JSON.stringify(body), headers: DocDbRouter.headers })
         fetch(r).then()
     }
 }

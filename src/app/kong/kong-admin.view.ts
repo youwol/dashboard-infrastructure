@@ -1,27 +1,14 @@
 import { attr$, child$, HTMLElement$, VirtualDOM } from "@youwol/flux-view"
 import { BehaviorSubject, Observable, Subject, Subscription } from "rxjs"
 import { Backend } from "../backend/router"
-import { RouteResp, RoutesResp, ServiceResp, ServicesResp, Status as KongStatus } from "../backend/kong.router"
+import { RouteResp, RoutesResp, ServiceResp, ServicesResp, Status as KongStatus } from "./kong.router"
 import { innerTabClasses } from "../utils-view"
 import { DataTreeView } from "../views/data-tree.view"
 import { filter, mergeMap } from "rxjs/operators"
+import { KongState } from "./kong.view"
 
 
 
-
-
-export class KongAdminState {
-
-    static status$ : Observable<KongStatus> = Backend.kong.status$
-
-    selectedService$ = new BehaviorSubject<string>(undefined)
-    constructor() {
-    }
-
-    subscribe() : Array<Subscription> {
-        return []
-    }
-}
 
 
 export class KongAdminView implements VirtualDOM {
@@ -30,19 +17,21 @@ export class KongAdminView implements VirtualDOM {
     public readonly children: Array<VirtualDOM>
     public readonly class = innerTabClasses
 
+    selectedService$ = new BehaviorSubject<string>(undefined)
+
     connectedCallback: (elem) => void
 
-    constructor(public readonly state: KongAdminState) {
-        
+    constructor(public readonly state: KongState) {
+
         this.children = [
             {
                 class: 'flex-grow-1 w-100 h-100',
                 children: [
                     child$(
-                        KongAdminState.status$,
+                        state.status$,
                         (status: KongStatus) => {
 
-                            if(!status.installed ) 
+                            if (!status.installed)
                                 return {
                                     innerText: "Kong is not installed"
                                 }
@@ -58,44 +47,44 @@ export class KongAdminView implements VirtualDOM {
         }
     }
 
-    view(){
+    view() {
         return {
-            class:"h-100 d-flex flex-column",
+            class: "h-100 d-flex flex-column",
             children: [
                 child$(
-                    Backend.kong.kongAdminInfo$(),
+                    Backend.kong.kongAdminInfo$(this.state.pack.namespace),
                     (resp) => {
-                        let state =  new DataTreeView.State({
-                            title:'raw kong-admin service',
-                            data:resp
+                        let state = new DataTreeView.State({
+                            title: 'raw kong-admin service',
+                            data: resp
                         })
-                        return new DataTreeView.View({state} as any)
+                        return new DataTreeView.View({ state } as any)
                     }
                 ),
                 {
                     class: 'flex-grow-1 overflow-auto',
-                    children:[
+                    children: [
                         {
-                            class:'h-50 overflow-auto',
-                            children:[
+                            class: 'h-50 overflow-auto',
+                            children: [
                                 child$(
-                                    Backend.kong.kongAdminServices$(),
+                                    Backend.kong.kongAdminServices$(this.state.pack.namespace),
                                     (resp: ServicesResp) => {
-                                        return servicesTableView(resp.data, this.state) 
+                                        return this.servicesTableView(resp.data)
                                     }
                                 )
                             ]
                         },
                         {
-                            class:'',
-                            children:[
+                            class: '',
+                            children: [
                                 child$(
-                                    this.state.selectedService$.pipe(
-                                        filter( selected => selected != undefined),
-                                        mergeMap( (selected) => Backend.kong.kongAdminRoutes$(selected))
+                                    this.selectedService$.pipe(
+                                        filter(selected => selected != undefined),
+                                        mergeMap((selected) => Backend.kong.kongAdminRoutes$(this.state.pack.namespace, selected))
                                     ),
                                     (resp: RoutesResp) => {
-                                        return routesTableView(resp.data, this.state) 
+                                        return this.routesTableView(resp.data)
                                     }
                                 )
                             ]
@@ -105,10 +94,8 @@ export class KongAdminView implements VirtualDOM {
             ]
         }
     }
-}
 
-
-function routesTableView(routes: Array<RouteResp>, state:KongAdminState){
+    routesTableView(routes: Array<RouteResp>) {
 
         return {
             tag: 'table', class: 'fv-color-primary mx-auto text-center my-2 h-50',
@@ -120,9 +107,9 @@ function routesTableView(routes: Array<RouteResp>, state:KongAdminState){
                         {
                             tag: 'tr', class: 'fv-bg-background-alt',
                             children: [
-                                { tag: 'td', class:"px-3", innerText: 'name' },
-                                { tag: 'td', class:"px-3", innerText: 'hosts' },
-                                { tag: 'td', class:"px-3", innerText: 'paths' }
+                                { tag: 'td', class: "px-3", innerText: 'name' },
+                                { tag: 'td', class: "px-3", innerText: 'hosts' },
+                                { tag: 'td', class: "px-3", innerText: 'paths' }
                             ]
                         }
                     ]
@@ -134,65 +121,64 @@ function routesTableView(routes: Array<RouteResp>, state:KongAdminState){
                             return {
                                 tag: 'tr',
                                 children: [
-                                    { tag: 'td', class:"px-3", innerText: route.name },
-                                    { tag: 'td', class:"px-3", innerText: route.hosts },
-                                    { tag: 'td', class:"px-3", innerText: route.paths }
+                                    { tag: 'td', class: "px-3", innerText: route.name },
+                                    { tag: 'td', class: "px-3", innerText: route.hosts },
+                                    { tag: 'td', class: "px-3", innerText: route.paths }
                                 ]
                             }
                         })
                 }
             ]
-    
+
         }
-}
+    }
 
+    servicesTableView(services: Array<ServiceResp>) {
 
-function servicesTableView(services: Array<ServiceResp>, state:KongAdminState){
-
-    return {
-        tag: 'table', class: 'fv-color-primary mx-auto text-center my-2 h-50',
-        style: { 'max-height': '100%' },
-        children: [
-            {
-                tag: 'thead',
-                children: [
-                    {
-                        tag: 'tr', class: 'fv-bg-background-alt',
-                        children: [
-                            { tag: 'td', class:"px-3", innerText: 'name' },
-                            { tag: 'td', class:"px-3", innerText: 'host' },
-                            { tag: 'td', class:"px-3", innerText: 'path' },
-                            { tag: 'td', class:"px-3", innerText: 'port' },
-                            { tag: 'td', class:"px-3", innerText: 'updated' }
-                        ]
-                    }
-                ]
-            },
-            {
-                tag: 'tbody',
-                children: services
-                    .map((service: ServiceResp) => {
-                        return {
-                            tag: 'tr',
-                            onclick: ()=>state.selectedService$.next(service.name),
-                            class: attr$(
-                                state.selectedService$,
-                                (selected) => selected == service.name ? 'fv-bg-focus ': 'fv-hover-bg-background-alt ',
-                                {
-                                    wrapper: (d) => d + 'fv-pointer'
-                                }
-                                ),
+        return {
+            tag: 'table', class: 'fv-color-primary mx-auto text-center my-2 h-50',
+            style: { 'max-height': '100%' },
+            children: [
+                {
+                    tag: 'thead',
+                    children: [
+                        {
+                            tag: 'tr', class: 'fv-bg-background-alt',
                             children: [
-                                { tag: 'td', class:"px-3", innerText: service.name },
-                                { tag: 'td', class:"px-3", innerText: service.host },
-                                { tag: 'td', class:"px-3", innerText: service.path },
-                                { tag: 'td', class:"px-3", innerText: service.port },
-                                { tag: 'td', class:"px-3", innerText: service.updatedAt }
+                                { tag: 'td', class: "px-3", innerText: 'name' },
+                                { tag: 'td', class: "px-3", innerText: 'host' },
+                                { tag: 'td', class: "px-3", innerText: 'path' },
+                                { tag: 'td', class: "px-3", innerText: 'port' },
+                                { tag: 'td', class: "px-3", innerText: 'updated' }
                             ]
                         }
-                    })
-            }
-        ]
-
+                    ]
+                },
+                {
+                    tag: 'tbody',
+                    children: services
+                        .map((service: ServiceResp) => {
+                            return {
+                                tag: 'tr',
+                                onclick: () => this.selectedService$.next(service.name),
+                                class: attr$(
+                                    this.selectedService$,
+                                    (selected) => selected == service.name ? 'fv-bg-focus ' : 'fv-hover-bg-background-alt ',
+                                    {
+                                        wrapper: (d) => d + 'fv-pointer'
+                                    }
+                                ),
+                                children: [
+                                    { tag: 'td', class: "px-3", innerText: service.name },
+                                    { tag: 'td', class: "px-3", innerText: service.host },
+                                    { tag: 'td', class: "px-3", innerText: service.path },
+                                    { tag: 'td', class: "px-3", innerText: service.port },
+                                    { tag: 'td', class: "px-3", innerText: service.updatedAt }
+                                ]
+                            }
+                        })
+                }
+            ]
+        }
     }
 }

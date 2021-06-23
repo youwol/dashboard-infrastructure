@@ -1,7 +1,7 @@
 import { combineLatest, Observable, ReplaySubject } from "rxjs"
 import { map, take } from "rxjs/operators"
-import { Environment, instanceOfEnvironment } from "../environment/models"
-import { createObservableFromFetch } from "./router"
+import { Environment, instanceOfEnvironment } from "./models"
+import { createObservableFromFetch } from "../backend/router"
 
 export class EnvironmentRouter{
 

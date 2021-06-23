@@ -1,7 +1,7 @@
 import { ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
+import { EnvironmentRouter } from "../environment/environment.router"
 
 
 export interface Status{
@@ -39,22 +39,34 @@ export class K8sDashboardRouter{
                 K8sDashboardRouter.status$.next(d as Status) 
         };
         
-        K8sDashboardRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            K8sDashboardRouter.triggerStatus()
-        })
         return K8sDashboardRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${K8sDashboardRouter.urlBase}/status`, { headers: K8sDashboardRouter.headers })
+    static watch(namespace: string) {
+
+        K8sDashboardRouter.connectWs().pipe(
+            take(1),
+            mergeMap(() => EnvironmentRouter.environments$)
+        ).subscribe(() => {
+            K8sDashboardRouter.triggerStatus(namespace)
+        })
+
+        return K8sDashboardRouter.status$.pipe(
+            filter((message: any) => message.namespace == namespace)
+        )
+    }
+    
+    static triggerStatus(namespace: string){
+        let r = new Request( `${K8sDashboardRouter.urlBase}/${namespace}/status`, { headers: K8sDashboardRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(){
-        let r = new Request( `${K8sDashboardRouter.urlBase}/install`, { headers: K8sDashboardRouter.headers })
+    static triggerInstall(namespace: string, body){
+
+        let r = new Request( 
+            `${K8sDashboardRouter.urlBase}/${namespace}/install`, 
+            { method: 'POST', body: JSON.stringify(body), headers: K8sDashboardRouter.headers }
+            )
         fetch(r).then()
     }
 }

@@ -11,13 +11,16 @@ import { GeneralState, GeneralView } from './cluster.view'
 let titles = {
     [PanelId.ConfigurationCluster] :'Cluster'
 }
-export class EnvironmentState{
+export class EnvironmentState {
 
+    pack = undefined
     logMessages$ = new Subject<string>()
 
     generalState = new GeneralState()
     
-    constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
+    constructor(
+        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        ){
 
         Backend.environment.connectWs()
     }

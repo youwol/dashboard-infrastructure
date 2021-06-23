@@ -1,38 +1,42 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralState, GeneralView } from './general.view'
-import { Status as PostgreSqlStatus} from '../backend/postgre-sql.router'
+import { GeneralView } from './general.view'
+import { Status as PostgreSqlStatus} from './postgre-sql.router'
+import { PackageState } from '../models'
+import { Package } from '../environment/models'
 
 
 let titles = {
     [PanelId.PostgreSqlGeneral] :'General'
 }
 
-export class PostgreSqlState{
+export class PostgreSqlState implements PackageState{
 
-    status$ = new Subject<PostgreSqlStatus>()
+    status$ : Observable<PostgreSqlStatus>
+    childrenPanels$ = new BehaviorSubject([PanelId.PostgreSqlGeneral])
+        
+    constructor(
+        public readonly pack: Package, 
+        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        ){
+        this.status$ = Backend.postgreSql.watch(pack.namespace)
+    }
 
-    generalState = new GeneralState()
-    
-    constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
-        Backend.postgreSql.connectWs()
-        this.status$ = Backend.postgreSql.status$
-        this.status$.subscribe( status => {
-            console.log(status)
-        })
+    subscribe() : Array<Subscription> {
+        return []
     }
 }
 
 class GeneralTabData extends Tabs.TabData{
     
-    constructor(public readonly generalState){
+    constructor(public readonly state: PostgreSqlState){
         super( PanelId.PostgreSqlGeneral, titles[PanelId.PostgreSqlGeneral])
     }
     view() {
-        return new GeneralView(this.generalState)
+        return new GeneralView(this.state)
     }
 }
 
@@ -48,7 +52,7 @@ export class PostgreSqlView implements VirtualDOM{
     constructor(state:PostgreSqlState){
 
         let tabsData = [
-            new GeneralTabData(state.generalState)
+            new GeneralTabData(state)
         ]
         
         this.children = [

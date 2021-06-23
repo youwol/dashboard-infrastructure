@@ -1,7 +1,7 @@
 import { ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
+import { EnvironmentRouter } from "../environment/environment.router"
 
 
 export interface Status{
@@ -37,22 +37,33 @@ export class ScyllaRouter{
                 ScyllaRouter.status$.next(d as Status) 
         };
         
-        ScyllaRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            ScyllaRouter.triggerStatus()
-        })
         return ScyllaRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${ScyllaRouter.urlBase}/status`, { headers: ScyllaRouter.headers })
+    static watch(namespace: string) {
+
+        ScyllaRouter.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            ScyllaRouter.triggerStatus(namespace)
+        })
+        
+        return ScyllaRouter.status$.pipe(
+            filter( (message: any) => message.namespace == namespace)
+        )
+    }
+
+    static triggerStatus(namespace: string){
+
+        let r = new Request( `${ScyllaRouter.urlBase}/${namespace}/status`, { headers: ScyllaRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(){
-        let r = new Request( `${ScyllaRouter.urlBase}/install`, { headers: ScyllaRouter.headers })
+    static triggerInstall(namespace: string, body ){
+
+        let r = new Request( `${ScyllaRouter.urlBase}/${namespace}/install`, 
+        { method: 'POST', body: JSON.stringify(body), headers: ScyllaRouter.headers })
         fetch(r).then()
     }
 }

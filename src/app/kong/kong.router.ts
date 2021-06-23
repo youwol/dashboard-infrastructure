@@ -1,8 +1,8 @@
 import { Observable, ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
-import { createObservableFromFetch } from "./router"
+import { EnvironmentRouter } from "../environment/environment.router"
+import { createObservableFromFetch } from "../backend/router"
 
 
 export interface Status{
@@ -66,42 +66,53 @@ export class KongRouter{
                 KongRouter.status$.next(d as Status) 
         };
         
-        KongRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            KongRouter.triggerStatus()
-        })
         return KongRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${KongRouter.urlBase}/status`, { headers: KongRouter.headers })
-        fetch(r).then()
-    }
+    static watch(namespace: string) {
 
-    static triggerInstall(){
-        let r = new Request( `${KongRouter.urlBase}/install`, { headers: KongRouter.headers })
-        fetch(r).then()
-    }
-
-    static kongAdminInfo$(){
+        KongRouter.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            KongRouter.triggerStatus(namespace)
+        })
         
-        let url = `${KongRouter.urlBase}/kong-admin/info`
+        return KongRouter.status$.pipe(
+            filter( (message: any) => message.namespace == namespace)
+        )
+    }
+
+    static triggerStatus(namespace: string){
+
+        let r = new Request( `${KongRouter.urlBase}/${namespace}/status`, { headers: KongRouter.headers })
+        fetch(r).then()
+    }
+
+    static triggerInstall(namespace: string, body ){
+
+        let r = new Request( `${KongRouter.urlBase}/${namespace}/install`, 
+        { method: 'POST', body: JSON.stringify(body), headers: KongRouter.headers })
+        fetch(r).then()
+    }
+
+    static kongAdminInfo$(namespace: string){
+        
+        let url = `${KongRouter.urlBase}/${namespace}/kong-admin/info`
         let request = new Request(url, { method: 'GET', headers: KongRouter.headers })
         return createObservableFromFetch(request)
     }
     
-    static kongAdminServices$(): Observable<ServicesResp>{
+    static kongAdminServices$(namespace: string): Observable<ServicesResp>{
         
-        let url = `${KongRouter.urlBase}/kong-admin/services`
+        let url = `${KongRouter.urlBase}/${namespace}/kong-admin/services`
         let request = new Request(url, { method: 'GET', headers: KongRouter.headers })
         return createObservableFromFetch(request) as Observable<ServicesResp>
     }
 
-    static kongAdminRoutes$(service: string): Observable<RoutesResp>{
+    static kongAdminRoutes$(namespace: string, service: string): Observable<RoutesResp>{
         
-        let url = `${KongRouter.urlBase}/kong-admin/services/${service}/routes`
+        let url = `${KongRouter.urlBase}/${namespace}/kong-admin/services/${service}/routes`
         let request = new Request(url, { method: 'GET', headers: KongRouter.headers })
         return createObservableFromFetch(request) as Observable<RoutesResp>
     }

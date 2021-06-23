@@ -1,38 +1,44 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralState, GeneralView } from './general.view'
-import { Status as MinioStatus} from '../backend/minio.router'
+import { GeneralView } from './general.view'
+import { Status as MinioStatus} from './minio.router'
+import { PackageState } from '../models'
+import { Package } from '../environment/models'
 
 
 let titles = {
     [PanelId.MinioGeneral] :'General'
 }
 
-export class MinioState{
+export class MinioState  implements PackageState {
 
-    status$ = new Subject<MinioStatus>()
+    status$ : Observable<MinioStatus>
 
-    generalState = new GeneralState()
-    
-    constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
-        Backend.minio.connectWs()
-        this.status$ = Backend.minio.status$
-        this.status$.subscribe( status => {
-            console.log(status)
-        })
+    childrenPanels$ = new BehaviorSubject([PanelId.MinioGeneral])
+
+    constructor(
+        public readonly pack: Package, 
+        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        ){
+
+        this.status$ = Backend.minio.watch(pack.namespace)
+    }
+
+    subscribe(): Array<Subscription> {
+        return []
     }
 }
 
 class GeneralTabData extends Tabs.TabData{
     
-    constructor(public readonly generalState){
+    constructor(public readonly state: MinioState){
         super( PanelId.MinioGeneral, titles[PanelId.MinioGeneral])
     }
     view() {
-        return new GeneralView(this.generalState)
+        return new GeneralView(this.state)
     }
 }
 
@@ -47,7 +53,7 @@ export class MinioView implements VirtualDOM{
     constructor(state:MinioState){
 
         let tabsData = [
-            new GeneralTabData(state.generalState)            
+            new GeneralTabData(state)            
         ]
         
         this.children = [

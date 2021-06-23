@@ -1,28 +1,32 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralState, GeneralView } from './general.view'
-import { Status as RedisStatus} from '../backend/redis.router'
+import { GeneralView } from './general.view'
+import { Status as RedisStatus} from './redis.router'
+import { PackageState } from '../models'
+import { Package } from '../environment/models'
 
 
 let titles = {
     [PanelId.RedisGeneral] :'General'
 }
 
-export class RedisState{
+export class RedisState implements PackageState {
 
-    status$ = new Subject<RedisStatus>()
+    status$ : Observable<RedisStatus>
+    childrenPanels$ = new BehaviorSubject([PanelId.RedisGeneral])
 
-    generalState = new GeneralState()
-    
-    constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
-        Backend.redis.connectWs()
-        this.status$ = Backend.redis.status$
-        this.status$.subscribe( status => {
-            console.log(status)
-        })
+    constructor(
+        public readonly pack: Package, 
+        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        ){
+        this.status$ = Backend.redis.watch(pack.namespace)
+    }
+
+    subscribe() : Array<Subscription> {
+        return []
     }
 }
 
@@ -47,7 +51,7 @@ export class RedisView implements VirtualDOM{
     constructor(state:RedisState){
 
         let tabsData = [
-            new GeneralTabData(state.generalState)            
+            new GeneralTabData(state)            
         ]
         
         this.children = [

@@ -1,3 +1,6 @@
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Package } from "./environment/models";
+import { PanelId } from "./panels-info";
 
 
 
@@ -15,6 +18,20 @@ export interface DeploymentStatus{
     sanity: SanityEnum
     pending: boolean
 }
+
+
+export interface Selection{
+    package: Package
+    panel: PanelId
+}
+
+export interface PackageState{
+    pack: Package
+    selectedPanel$: Subject<PanelId>
+    childrenPanels$: BehaviorSubject<PanelId[]>
+    status$: Observable<DeploymentStatus>
+}
+
 
 export function instanceOfDeploymentStatus( message ) : message is DeploymentStatus{
     return message.installed != undefined && message.pending != undefined

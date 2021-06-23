@@ -1,8 +1,8 @@
 import { ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
-import { createObservableFromFetch } from "./router"
+import { EnvironmentRouter } from "../environment/environment.router"
+import { createObservableFromFetch } from "../backend/router"
 
 
 export interface Status{
@@ -41,27 +41,39 @@ export class MinioRouter{
                 MinioRouter.status$.next(d as Status) 
         };
         
-        MinioRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            MinioRouter.triggerStatus()
-        })
         return MinioRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${MinioRouter.urlBase}/status`, { headers: MinioRouter.headers })
+    static watch(namespace: string) {
+
+        MinioRouter.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            MinioRouter.triggerStatus(namespace)
+        })
+        
+        return MinioRouter.status$.pipe(
+            filter( (message: any) => message.namespace == namespace)
+        )
+    }
+
+    static triggerStatus(namespace: string){
+
+        let r = new Request( `${MinioRouter.urlBase}/${namespace}/status`, { headers: MinioRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(){
-        let r = new Request( `${MinioRouter.urlBase}/install`, { headers: MinioRouter.headers })
+    static triggerInstall(namespace: string, body ){
+
+        let r = new Request( `${MinioRouter.urlBase}/${namespace}/install`, 
+        { method: 'POST', body: JSON.stringify(body), headers: MinioRouter.headers })
         fetch(r).then()
     }
 
-    static triggerUpgrade(){
-        let r = new Request( `${MinioRouter.urlBase}/upgrade`, { headers: MinioRouter.headers })
+    static triggerUpgrade(namespace: string, body){
+        let r = new Request( `${MinioRouter.urlBase}/${namespace}/upgrade`,
+        { method: 'POST', body: JSON.stringify(body), headers: MinioRouter.headers })
         fetch(r).then()
     }
 }

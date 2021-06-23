@@ -1,38 +1,43 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralState, GeneralView } from './general.view'
-import { Status as ScyllaStatus} from '../backend/scylla.router'
+import { GeneralView } from './general.view'
+import { Status as ScyllaStatus} from './scylla.router'
+import { PackageState } from '../models'
+import { Package } from '../environment/models'
 
 
 let titles = {
     [PanelId.ScyllaGeneral] :'General'
 }
 
-export class ScyllaState{
+export class ScyllaState implements PackageState{
 
-    status$ = new Subject<ScyllaStatus>()
+    status$ : Observable<ScyllaStatus>
 
-    generalState = new GeneralState()
-    
-    constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
-        Backend.scylla.connectWs()
-        this.status$ = Backend.scylla.status$
-        this.status$.subscribe( status => {
-            console.log(status)
-        })
+    childrenPanels$ = new BehaviorSubject([PanelId.ScyllaGeneral])
+
+    constructor(
+        public readonly pack: Package, 
+        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        ){
+        this.status$ = Backend.scylla.watch(pack.namespace)
+    }
+
+    subscribe() : Array<Subscription> {
+        return []
     }
 }
 
 class GeneralTabData extends Tabs.TabData{
     
-    constructor(public readonly generalState){
+    constructor(public readonly state: ScyllaState){
         super( PanelId.ScyllaGeneral, titles[PanelId.ScyllaGeneral])
     }
     view() {
-        return new GeneralView(this.generalState)
+        return new GeneralView(this.state)
     }
 }
 
@@ -47,7 +52,7 @@ export class ScyllaView implements VirtualDOM{
     constructor(state:ScyllaState){
 
         let tabsData = [
-            new GeneralTabData(state.generalState)            
+            new GeneralTabData(state)            
         ]
         
         this.children = [

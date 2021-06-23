@@ -3,6 +3,7 @@
 
 
 export enum PanelId{
+    None = "none",
     ConfigurationCluster = "conf.cluster",
     K8sDashboardGeneral = "k8sDashboard.general",
     PostgreSqlGeneral = "postgreSql.general",

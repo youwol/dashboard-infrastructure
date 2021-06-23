@@ -1,7 +1,7 @@
 import { ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
+import { EnvironmentRouter } from "../environment/environment.router"
 
 
 export interface Status{
@@ -37,22 +37,33 @@ export class RedisRouter{
                 RedisRouter.status$.next(d as Status) 
         };
         
-        RedisRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            RedisRouter.triggerStatus()
-        })
         return RedisRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${RedisRouter.urlBase}/status`, { headers: RedisRouter.headers })
+    static watch(namespace: string) {
+
+        RedisRouter.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            RedisRouter.triggerStatus(namespace)
+        })
+        
+        return RedisRouter.status$.pipe(
+            filter( (message: any) => message.namespace == namespace)
+        )
+    }
+
+    static triggerStatus(namespace: string){
+
+        let r = new Request( `${RedisRouter.urlBase}/${namespace}/status`, { headers: RedisRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(){
-        let r = new Request( `${RedisRouter.urlBase}/install`, { headers: RedisRouter.headers })
+    static triggerInstall(namespace: string, body ){
+
+        let r = new Request( `${RedisRouter.urlBase}/${namespace}/install`, 
+        { method: 'POST', body: JSON.stringify(body), headers: RedisRouter.headers })
         fetch(r).then()
     }
 }

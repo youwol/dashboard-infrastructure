@@ -1,38 +1,46 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralState, GeneralView } from './general.view'
-import { Status as DocDbStatus} from '../backend/docdb.router'
+import { GeneralView } from './general.view'
+import { Status as DocDbStatus} from '../redis/redis.router'
+import { PackageState } from '../models'
+import { Package } from '../environment/models'
+import { EnvironmentRouter } from '../environment/environment.router'
+import { DocDbRouter } from './docdb.router'
+import { filter, mergeMap, take } from 'rxjs/operators'
 
 
 let titles = {
     [PanelId.DocDbGeneral] :'General'
 }
 
-export class DocDbState{
+export class DocDbState implements PackageState{
 
-    status$ = new Subject<DocDbStatus>()
-
-    generalState = new GeneralState()
+    status$  :  Observable<DocDbStatus>
     
-    constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
-        Backend.docdb.connectWs()
-        this.status$ = Backend.docdb.status$
-        this.status$.subscribe( status => {
-            console.log(status)
-        })
+    childrenPanels$ = new BehaviorSubject([PanelId.DocDbGeneral])
+
+    constructor(
+        public readonly pack: Package,
+        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        ){
+
+        this.status$ = Backend.docdb.watch(pack.namespace)
     }
+
+    subscribe() : Array<Subscription> {return []}
+
 }
 
 class GeneralTabData extends Tabs.TabData{
     
-    constructor(public readonly generalState){
+    constructor(public readonly state: DocDbState){
         super( PanelId.DocDbGeneral, titles[PanelId.DocDbGeneral])
     }
     view() {
-        return new GeneralView(this.generalState)
+        return new GeneralView(this.state)
     }
 }
 
@@ -47,7 +55,7 @@ export class DocDbView implements VirtualDOM{
     constructor(state:DocDbState){
 
         let tabsData = [
-            new GeneralTabData(state.generalState)            
+            new GeneralTabData(state)            
         ]
         
         this.children = [

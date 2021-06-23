@@ -1,7 +1,7 @@
 import { ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
+import { EnvironmentRouter } from "../environment/environment.router"
 
 
 export interface Status{
@@ -37,22 +37,33 @@ export class StorageRouter{
                 StorageRouter.status$.next(d as Status) 
         };
         
-        StorageRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            StorageRouter.triggerStatus()
-        })
         return StorageRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${StorageRouter.urlBase}/status`, { headers: StorageRouter.headers })
+    static watch(namespace: string) {
+
+        StorageRouter.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            StorageRouter.triggerStatus(namespace)
+        })
+        
+        return StorageRouter.status$.pipe(
+            filter( (message: any) => message.namespace == namespace)
+        )
+    }
+
+    static triggerStatus(namespace: string){
+
+        let r = new Request( `${StorageRouter.urlBase}/${namespace}/status`, { headers: StorageRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(){
-        let r = new Request( `${StorageRouter.urlBase}/install`, { headers: StorageRouter.headers })
+    static triggerInstall(namespace: string, body ){
+
+        let r = new Request( `${StorageRouter.urlBase}/${namespace}/install`, 
+        { method: 'POST', body: JSON.stringify(body), headers: StorageRouter.headers })
         fetch(r).then()
     }
 }

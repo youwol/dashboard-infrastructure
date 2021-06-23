@@ -1,15 +1,15 @@
 import { Observable, ReplaySubject } from "rxjs";
 import { LogMessage } from "../logs-view";
-import { DocDbRouter } from "./docdb.router";
-import { EnvironmentRouter } from "./environment.router";
-import { K8sDashboardRouter } from "./k8s-dashboard.router";
-import { KongRouter } from "./kong.router";
+import { DocDbRouter } from "../docdb/docdb.router";
+import { EnvironmentRouter } from "../environment/environment.router";
+import { K8sDashboardRouter } from "../k8s-dashboard/k8s-dashboard.router";
+import { KongRouter } from "../kong/kong.router";
 import { LogsRouter } from "./logs.router";
-import { MinioRouter } from "./minio.router";
-import { PostgreSqlRouter } from "./postgre-sql.router";
-import { ScyllaRouter } from "./scylla.router";
-import { StorageRouter } from "./storage.router";
-import { RedisRouter } from "./redis.router";
+import { MinioRouter } from "../minio/minio.router";
+import { PostgreSqlRouter } from "../postgre-sql/postgre-sql.router";
+import { ScyllaRouter } from "../scylla/scylla.router";
+import { StorageRouter } from "../storage/storage.router";
+import { RedisRouter } from "../redis/redis.router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 

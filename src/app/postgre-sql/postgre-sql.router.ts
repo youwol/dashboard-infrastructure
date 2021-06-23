@@ -1,7 +1,7 @@
 import { ReplaySubject } from "rxjs"
-import { mergeMap, take } from "rxjs/operators"
+import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "./environment.router"
+import { EnvironmentRouter } from "../environment/environment.router"
 
 
 export interface Status{
@@ -37,22 +37,33 @@ export class PostgreSqlRouter{
                 PostgreSqlRouter.status$.next(d as Status) 
         };
         
-        PostgreSqlRouter.webSocket$.pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$)
-        ).subscribe( () => {
-            PostgreSqlRouter.triggerStatus()
-        })
         return PostgreSqlRouter.webSocket$
     }
 
-    static triggerStatus(){
-        let r = new Request( `${PostgreSqlRouter.urlBase}/status`, { headers: PostgreSqlRouter.headers })
+    static watch(namespace: string) {
+
+        PostgreSqlRouter.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            PostgreSqlRouter.triggerStatus(namespace)
+        })
+        
+        return PostgreSqlRouter.status$.pipe(
+            filter( (message: any) => message.namespace == namespace)
+        )
+    }
+
+    static triggerStatus(namespace: string){
+
+        let r = new Request( `${PostgreSqlRouter.urlBase}/${namespace}/status`, { headers: PostgreSqlRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(){
-        let r = new Request( `${PostgreSqlRouter.urlBase}/install`, { headers: PostgreSqlRouter.headers })
+    static triggerInstall(namespace: string, body ){
+
+        let r = new Request( `${PostgreSqlRouter.urlBase}/${namespace}/install`, 
+        { method: 'POST', body: JSON.stringify(body), headers: PostgreSqlRouter.headers })
         fetch(r).then()
     }
 }

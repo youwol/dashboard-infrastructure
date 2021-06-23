@@ -1,11 +1,13 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralState, GeneralView } from './general.view'
-import { Status as KongStatus} from '../backend/kong.router'
-import { KongAdminState, KongAdminView } from './kong-admin.view'
+import { GeneralView } from './general.view'
+import { Status as KongStatus} from './kong.router'
+import { KongAdminView } from './kong-admin.view'
+import { Package } from '../environment/models'
+import { PackageState } from '../models'
 
 
 let titles = {
@@ -13,29 +15,30 @@ let titles = {
     [PanelId.KongAdmin] :'Kong admin'
 }
 
-export class KongState{
+export class KongState implements PackageState {
 
-    status$ = new Subject<KongStatus>()
-
-    generalState = new GeneralState()
-    kongAdminState = new KongAdminState()
+    status$ : Observable<KongStatus>
+    childrenPanels$ = new BehaviorSubject([PanelId.KongGeneral, PanelId.KongAdmin])
     
-    constructor(public readonly selectedPanel$: BehaviorSubject<PanelId>){
-        Backend.kong.connectWs()
-        this.status$ = Backend.kong.status$
-        this.status$.subscribe( status => {
-            console.log(status)
-        })
+    constructor(
+        public readonly pack: Package,
+        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        ){
+            this.status$ = Backend.kong.watch(pack.namespace)
+    }
+
+    subscribe() : Array<Subscription> {
+        return []
     }
 }
 
 class GeneralTabData extends Tabs.TabData{
     
-    constructor(public readonly generalState){
+    constructor(public readonly state: KongState){
         super( PanelId.KongGeneral, titles[PanelId.KongGeneral])
     }
     view() {
-        return new GeneralView(this.generalState)
+        return new GeneralView(this.state)
     }
 }
 
@@ -58,11 +61,16 @@ export class KongView implements VirtualDOM{
     public readonly class = 'p-2 h-100 flex-grow-1'
     public readonly state : KongState
     
+    static children$ = new BehaviorSubject([
+        PanelId.KongGeneral,
+        PanelId.KongAdmin
+    ])
+
     constructor(state:KongState){
 
         let tabsData = [
-            new GeneralTabData(state.generalState),
-            new KongAdminTabData(state.kongAdminState),            
+            new GeneralTabData(state),
+            new KongAdminTabData(state),            
         ]
         
         this.children = [

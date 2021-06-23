@@ -14,11 +14,24 @@ export interface ClusterInfo{
     k8sApiProxy: string
 }
 
+export interface Package{
+    name: string
+    namespace: string
+    icon: string
+}
+
+export interface DeploymentConfiguration{
+
+    general: any
+    packages: Array<Package>
+}
+
+
 export interface Environment {
 
     clusterInfo: ClusterInfo
     configFilepath: string
-    deploymentConfiguration: any
+    deploymentConfiguration: DeploymentConfiguration
 }
 
 export function instanceOfEnvironment(object: any): object is Environment{
