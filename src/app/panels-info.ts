@@ -8,9 +8,10 @@ export enum PanelId{
     PostgreSqlGeneral = "postgreSql.general",
     KongGeneral = "kong.general",
     KongAdmin = "kong.admin",
-    MinioGeneral = "minio.general"
+    MinioGeneral = "minio.general",
     ScyllaGeneral = "scylla.general",
     DocDbGeneral = "docdb.general",
+    StorageGeneral = "storage.general",
     RedisGeneral = "redis.general"
 }
 
@@ -23,6 +24,7 @@ export let tabsDisplayInfo = {
     [PanelId.MinioGeneral]: { title: "General", enabled: true},
     [PanelId.ScyllaGeneral]: { title: "General", enabled: true},
     [PanelId.DocDbGeneral]: { title: "General", enabled: true},
+    [PanelId.StorageGeneral]: { title: "General", enabled: true},
     [PanelId.RedisGeneral]: { title: "General", enabled: true},
 }
 

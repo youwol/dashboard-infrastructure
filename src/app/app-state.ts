@@ -8,6 +8,8 @@ import { MinioState, MinioView } from "./minio/minio.view"
 import { PanelId, tabsDisplayInfo } from "./panels-info"
 import { PostgreSqlState, PostgreSqlView } from "./postgre-sql/postgre-sql.view"
 import { RedisState, RedisView } from "./redis/redis.view"
+import { ScyllaState, ScyllaView } from "./scylla/scylla.view"
+import { StorageState, StorageView } from "./storage/storage.view"
 
 export class AppState{
 
@@ -73,6 +75,9 @@ export class AppState{
             }
             if ([PanelId.DocDbGeneral].includes(selected)) {
                 return new DocDbView(this.docdbState)
+            }
+            if ([PanelId.StorageGeneral].includes(selected)) {
+                return new StorageView(this.storageState)
             }
             if ([PanelId.RedisGeneral].includes(selected)) {
                 return new RedisView(this.redisState)

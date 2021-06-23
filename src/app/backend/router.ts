@@ -8,6 +8,7 @@ import { LogsRouter } from "./logs.router";
 import { MinioRouter } from "./minio.router";
 import { PostgreSqlRouter } from "./postgre-sql.router";
 import { ScyllaRouter } from "./scylla.router";
+import { StorageRouter } from "./storage.router";
 import { RedisRouter } from "./redis.router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
@@ -36,9 +37,10 @@ export class Backend {
         K8sDashboardRouter.headers=headers,
         PostgreSqlRouter.headers=headers,
         KongRouter.headers=headers,
-        MinioRouter.headers=headers
+        MinioRouter.headers=headers,
         ScyllaRouter.headers=headers,
         DocDbRouter.headers=headers,
+        StorageRouter.headers=headers,
         RedisRouter.headers=headers
     }
 
@@ -51,5 +53,6 @@ export class Backend {
     static minio = MinioRouter
     static scylla = ScyllaRouter
     static docdb = DocDbRouter
+    static storage = StorageRouter
     static redis = RedisRouter
 }
