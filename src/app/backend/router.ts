@@ -1,5 +1,6 @@
 import { Observable, ReplaySubject } from "rxjs";
 import { LogMessage } from "../logs-view";
+import { DocDbRouter } from "./docdb.router";
 import { EnvironmentRouter } from "./environment.router";
 import { K8sDashboardRouter } from "./k8s-dashboard.router";
 import { KongRouter } from "./kong.router";
@@ -37,6 +38,7 @@ export class Backend {
         KongRouter.headers=headers,
         MinioRouter.headers=headers
         ScyllaRouter.headers=headers,
+        DocDbRouter.headers=headers,
         RedisRouter.headers=headers
     }
 
@@ -48,5 +50,6 @@ export class Backend {
     static kong = KongRouter
     static minio = MinioRouter
     static scylla = ScyllaRouter
+    static docdb = DocDbRouter
     static redis = RedisRouter
 }

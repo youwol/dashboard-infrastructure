@@ -84,6 +84,13 @@ export class SideBarView implements VirtualDOM{
                         this.state.selected$,
                         this.state.redisState.status$
                     ),
+                    sectionGeneric(
+                        'DocDb',
+                        '/api/youwol-infra/docdb/icon',
+                        this.state.docdbChildren$,
+                        this.state.selected$,
+                        this.state.docdbState.status$
+                    ),
                     )
                 ]
             }

@@ -1,5 +1,6 @@
 import { BehaviorSubject } from "rxjs"
 import { map } from "rxjs/operators"
+import { DocDbState, DocDbView } from "./docdb/docdb.view"
 import { EnvironmentState, EnvironmentView } from "./environment/environment.view"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
 import { KongState, KongView } from "./kong/kong.view"
@@ -29,6 +30,9 @@ export class AppState{
     public readonly scyllaChildren$ = new BehaviorSubject([
         PanelId.ScyllaGeneral
     ])
+    public readonly docdbChildren$ = new BehaviorSubject([
+        PanelId.DocDbGeneral
+    ])
     public readonly redisChildren$ = new BehaviorSubject([
         PanelId.RedisGeneral
     ])
@@ -42,6 +46,7 @@ export class AppState{
     kongState = new KongState(this.selected$)
     minioState = new MinioState(this.selected$)
     scyllaState = new ScyllaState(this.selected$)
+    docdbState = new DocDbState(this.selected$)
     redisState = new RedisState(this.selected$)
 
 
@@ -65,6 +70,9 @@ export class AppState{
             }
             if ([PanelId.ScyllaGeneral].includes(selected)) {
                 return new ScyllaView(this.scyllaState)
+            }
+            if ([PanelId.DocDbGeneral].includes(selected)) {
+                return new DocDbView(this.docdbState)
             }
             if ([PanelId.RedisGeneral].includes(selected)) {
                 return new RedisView(this.redisState)
