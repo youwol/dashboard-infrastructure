@@ -6,6 +6,7 @@ import { KongState, KongView } from "./kong/kong.view"
 import { MinioState, MinioView } from "./minio/minio.view"
 import { PanelId, tabsDisplayInfo } from "./panels-info"
 import { PostgreSqlState, PostgreSqlView } from "./postgre-sql/postgre-sql.view"
+import { RedisState, RedisView } from "./redis/redis.view"
 
 export class AppState{
 
@@ -28,6 +29,10 @@ export class AppState{
     public readonly scyllaChildren$ = new BehaviorSubject([
         PanelId.ScyllaGeneral
     ])
+    public readonly redisChildren$ = new BehaviorSubject([
+        PanelId.RedisGeneral
+    ])
+
 
     public readonly selected$ = new BehaviorSubject<PanelId>(PanelId.ConfigurationCluster)
 
@@ -37,6 +42,7 @@ export class AppState{
     kongState = new KongState(this.selected$)
     minioState = new MinioState(this.selected$)
     scyllaState = new ScyllaState(this.selected$)
+    redisState = new RedisState(this.selected$)
 
 
     panelViewFactory$ = this.selected$.pipe(
@@ -59,6 +65,9 @@ export class AppState{
             }
             if ([PanelId.ScyllaGeneral].includes(selected)) {
                 return new ScyllaView(this.scyllaState)
+            }
+            if ([PanelId.RedisGeneral].includes(selected)) {
+                return new RedisView(this.redisState)
             }
         })
     )

@@ -77,6 +77,13 @@ export class SideBarView implements VirtualDOM{
                         this.state.selected$,
                         this.state.scyllaState.status$
                     ),
+                    sectionGeneric(
+                        'Redis',
+                        '/api/youwol-infra/redis/icon',
+                        this.state.redisChildren$,
+                        this.state.selected$,
+                        this.state.redisState.status$
+                    ),
                     )
                 ]
             }
