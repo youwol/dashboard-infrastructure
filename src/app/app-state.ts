@@ -35,6 +35,9 @@ export class AppState{
     public readonly docdbChildren$ = new BehaviorSubject([
         PanelId.DocDbGeneral
     ])
+    public readonly storageChildren$ = new BehaviorSubject([
+        PanelId.StorageGeneral
+    ])
     public readonly redisChildren$ = new BehaviorSubject([
         PanelId.RedisGeneral
     ])
@@ -49,6 +52,7 @@ export class AppState{
     minioState = new MinioState(this.selected$)
     scyllaState = new ScyllaState(this.selected$)
     docdbState = new DocDbState(this.selected$)
+    storageState = new StorageState(this.selected$)
     redisState = new RedisState(this.selected$)
 
 
