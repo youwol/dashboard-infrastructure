@@ -9,6 +9,7 @@ export enum PanelId{
     KongGeneral = "kong.general",
     KongAdmin = "kong.admin",
     MinioGeneral = "minio.general"
+    ScyllaGeneral = "scylla.general",
 }
 
 export let tabsDisplayInfo = {
@@ -18,5 +19,6 @@ export let tabsDisplayInfo = {
     [PanelId.KongGeneral]: { title: "General", enabled: true},
     [PanelId.KongAdmin]: { title: "Admin", enabled: true},
     [PanelId.MinioGeneral]: { title: "General", enabled: true},
+    [PanelId.ScyllaGeneral]: { title: "General", enabled: true},
 }
 

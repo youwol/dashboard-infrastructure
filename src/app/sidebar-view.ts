@@ -70,6 +70,13 @@ export class SideBarView implements VirtualDOM{
                         this.state.minioChildren$,
                         this.state.selected$,
                         this.state.minioState.status$
+                    sectionGeneric(
+                        'Scylla',
+                        '/api/youwol-infra/scylla/icon',
+                        this.state.scyllaChildren$,
+                        this.state.selected$,
+                        this.state.scyllaState.status$
+                    ),
                     )
                 ]
             }

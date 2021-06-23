@@ -25,6 +25,9 @@ export class AppState{
     public readonly minioChildren$ = new BehaviorSubject([
         PanelId.MinioGeneral
     ]) 
+    public readonly scyllaChildren$ = new BehaviorSubject([
+        PanelId.ScyllaGeneral
+    ])
 
     public readonly selected$ = new BehaviorSubject<PanelId>(PanelId.ConfigurationCluster)
 
@@ -33,6 +36,7 @@ export class AppState{
     postgreSqlState = new PostgreSqlState(this.selected$)
     kongState = new KongState(this.selected$)
     minioState = new MinioState(this.selected$)
+    scyllaState = new ScyllaState(this.selected$)
 
 
     panelViewFactory$ = this.selected$.pipe(
@@ -52,6 +56,9 @@ export class AppState{
             }
             if ([PanelId.MinioGeneral].includes(selected)){
                 return new MinioView(this.minioState)
+            }
+            if ([PanelId.ScyllaGeneral].includes(selected)) {
+                return new ScyllaView(this.scyllaState)
             }
         })
     )
