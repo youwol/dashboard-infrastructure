@@ -11,24 +11,24 @@ import { RedisState, RedisView } from "./redis/redis.view"
 import { ScyllaState, ScyllaView } from "./scylla/scylla.view"
 import { StorageState, StorageView } from "./storage/storage.view"
 
-export class AppState{
+export class AppState {
 
     public readonly environmentChildren$ = new BehaviorSubject([
         PanelId.ConfigurationCluster
     ])
     public readonly k8sDashboardChildren$ = new BehaviorSubject([
         PanelId.K8sDashboardGeneral
-    ])    
+    ])
     public readonly postgreSqlChildren$ = new BehaviorSubject([
         PanelId.PostgreSqlGeneral
-    ]) 
+    ])
     public readonly kongChildren$ = new BehaviorSubject([
         PanelId.KongGeneral,
         PanelId.KongAdmin
     ])
     public readonly minioChildren$ = new BehaviorSubject([
         PanelId.MinioGeneral
-    ]) 
+    ])
     public readonly scyllaChildren$ = new BehaviorSubject([
         PanelId.ScyllaGeneral
     ])
@@ -57,21 +57,21 @@ export class AppState{
 
 
     panelViewFactory$ = this.selected$.pipe(
-        map( selected => {
-    
-            if ([PanelId.ConfigurationCluster].includes(selected)){
+        map(selected => {
+
+            if ([PanelId.ConfigurationCluster].includes(selected)) {
                 return new EnvironmentView(this.configurationState)
             }
-            if ([PanelId.K8sDashboardGeneral].includes(selected)){
+            if ([PanelId.K8sDashboardGeneral].includes(selected)) {
                 return new K8sDashboardView(this.k8sDashboardState)
             }
-            if ([PanelId.PostgreSqlGeneral].includes(selected)){
+            if ([PanelId.PostgreSqlGeneral].includes(selected)) {
                 return new PostgreSqlView(this.postgreSqlState)
             }
-            if ([PanelId.KongGeneral, PanelId.KongAdmin].includes(selected)){
+            if ([PanelId.KongGeneral, PanelId.KongAdmin].includes(selected)) {
                 return new KongView(this.kongState)
             }
-            if ([PanelId.MinioGeneral].includes(selected)){
+            if ([PanelId.MinioGeneral].includes(selected)) {
                 return new MinioView(this.minioState)
             }
             if ([PanelId.ScyllaGeneral].includes(selected)) {
@@ -89,6 +89,6 @@ export class AppState{
         })
     )
 
-    constructor(){
+    constructor() {
     }
 }
