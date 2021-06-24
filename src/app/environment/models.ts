@@ -20,6 +20,14 @@ export interface Package{
     icon: string
 }
 
+export interface HelmPackage{
+    name: string
+    namespace: string
+    icon: string
+    withValues: any
+}
+
+
 export interface DeploymentConfiguration{
 
     general: any
