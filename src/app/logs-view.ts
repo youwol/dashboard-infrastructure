@@ -110,7 +110,7 @@ export class LogsView implements VirtualDOM{
     constructor(){
         this.state = new LogsState()
         this.children = [
-            this.header(),
+            //this.header(),
             this.content()
         ]
     }
