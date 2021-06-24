@@ -15,7 +15,8 @@ export enum PanelId{
     ScyllaExplorer = "scylla.explorer",
     DocDbGeneral = "docdb.general",
     StorageGeneral = "storage.general",
-    RedisGeneral = "redis.general"
+    RedisGeneral = "redis.general",
+    CDNGeneral = "cdn.general"
 }
 
 export let tabsDisplayInfo = {
@@ -31,5 +32,6 @@ export let tabsDisplayInfo = {
     [PanelId.DocDbGeneral]: { title: "General", enabled: true},
     [PanelId.StorageGeneral]: { title: "General", enabled: true},
     [PanelId.RedisGeneral]: { title: "General", enabled: true},
+    [PanelId.CDNGeneral]: { title: "General", enabled: true},
 }
 

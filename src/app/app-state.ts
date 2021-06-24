@@ -1,6 +1,7 @@
 
 import { BehaviorSubject, Subject } from "rxjs"
 import { Backend } from "./backend/router"
+import { CDNState, CDNView } from "./cdn/cdn.view"
 import { DocDbState, DocDbView } from "./docdb/docdb.view"
 import { Package } from "./environment/models"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
@@ -26,7 +27,8 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     scylla: new PackageFactory(ScyllaState, ScyllaView),
     redis: new PackageFactory(RedisState, RedisView),
     docdb: new PackageFactory(DocDbState, DocDbView),
-    storage: new PackageFactory(StorageState,StorageView)
+    storage: new PackageFactory(StorageState,StorageView),
+    'cdn-backend': new PackageFactory(CDNState,CDNView)
 }
 
 
@@ -64,6 +66,7 @@ export class AppState {
         let state = packagesState.find( s => s.pack.namespace==namespace &&  s.pack.name==name)
         let viewFactory = packagesFactory[state.pack.name].View
         this.panelViewFactory$.next(new viewFactory(state))
+        this.selectedPackage$.next(state.pack)
     }
 
 }

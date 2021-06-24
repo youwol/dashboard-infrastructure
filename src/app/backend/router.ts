@@ -12,6 +12,7 @@ import { StorageRouter } from "../storage/storage.router";
 import { RedisRouter } from "../redis/redis.router";
 import { mergeMap, take } from "rxjs/operators";
 import { instanceOfDeploymentStatus } from "../models";
+import { CDNRouter } from "../cdn/cdn.router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -38,6 +39,8 @@ export function createTextObservableFromFetch( request, extractFct = (d) =>d ){
     });
 }
 
+
+
 export class Backend {
 
     static urlBase = '/api/infra-backend'
@@ -55,7 +58,8 @@ export class Backend {
         ScyllaRouter.headers=headers,
         DocDbRouter.headers=headers,
         StorageRouter.headers=headers,
-        RedisRouter.headers=headers
+        RedisRouter.headers=headers,
+        CDNRouter.headers=headers
     }
 
 
@@ -69,6 +73,8 @@ export class Backend {
     static docdb = DocDbRouter
     static storage = StorageRouter
     static redis = RedisRouter
+    static cdn = CDNRouter
+
     static connectWs<TStatus>(routePath: string, RouterType){
 
         if(RouterType.webSocket$)
