@@ -2,22 +2,20 @@ import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
-import { PanelId } from '../panels-info'
+import { PanelId, tabsDisplayInfo } from '../panels-info'
 import { GeneralView } from './general.view'
 import { Status as ScyllaStatus} from './scylla.router'
 import { PackageState } from '../models'
 import { Package } from '../environment/models'
+import { ExplorerView } from './explorer.view'
 
 
-let titles = {
-    [PanelId.ScyllaGeneral] :'General'
-}
 
 export class ScyllaState implements PackageState{
 
     status$ : Observable<ScyllaStatus>
 
-    childrenPanels$ = new BehaviorSubject([PanelId.ScyllaGeneral])
+    childrenPanels$ = new BehaviorSubject([PanelId.ScyllaGeneral,PanelId.ScyllaExplorer])
 
     constructor(
         public readonly pack: Package, 
@@ -34,12 +32,26 @@ export class ScyllaState implements PackageState{
 class GeneralTabData extends Tabs.TabData{
     
     constructor(public readonly state: ScyllaState){
-        super( PanelId.ScyllaGeneral, titles[PanelId.ScyllaGeneral])
+        super(PanelId.ScyllaGeneral, tabsDisplayInfo[PanelId.ScyllaGeneral].title )
     }
+
     view() {
         return new GeneralView(this.state)
     }
 }
+
+
+class ExplorerTabData extends Tabs.TabData{
+    
+    constructor(public readonly state: ScyllaState){
+        super(PanelId.ScyllaExplorer, tabsDisplayInfo[PanelId.ScyllaExplorer].title )
+    }
+    
+    view() {
+        return new ExplorerView(this.state)
+    }
+}
+
 
 
 export class ScyllaView implements VirtualDOM{
@@ -52,7 +64,8 @@ export class ScyllaView implements VirtualDOM{
     constructor(state:ScyllaState){
 
         let tabsData = [
-            new GeneralTabData(state)            
+            new GeneralTabData(state),
+            new ExplorerTabData(state)            
         ]
         
         this.children = [
