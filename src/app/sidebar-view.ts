@@ -1,5 +1,5 @@
 import { VirtualDOM, child$, attr$, children$ } from '@youwol/flux-view'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map, mergeMap } from 'rxjs/operators'
 import { AppState } from './app-state'
 import { DeploymentStatus, PackageState, SanityEnum } from './models'
@@ -10,7 +10,7 @@ import { ExpandableGroup } from '@youwol/fv-group'
 export class SideBarView implements VirtualDOM{
 
     public readonly tag = 'div'
-    public readonly class = "d-flex flex-column p-2 border h-100 "
+    public readonly class = "d-flex flex-column p-2 border h-100 overflow-auto"
     public readonly style = {'min-width': '25%'}
 
     public readonly children
@@ -89,12 +89,14 @@ function sectionTitle(
             {wrapper: (d) => d+ "  px-2" }
         )
         : ""
-
+    let baseClasses = "d-flex align-items-center fa-2x"
     return {   
         class: attr$( 
             sectionSelected$,
-            (selected) => selected ? 'fv-text-focus' : '',
-            {wrapper: (d) => d+ "  d-flex align-items-center fa-2x" }
+            (selected) => selected ? 'fv-text-focus ' : '',
+            {   wrapper: (d) => d + baseClasses,
+                untilFirst: baseClasses
+            }   
         ),
         children:[
             {
@@ -136,16 +138,22 @@ function tabSubSection(
     ) : VirtualDOM {
 
     let enabled = tabsDisplayInfo[target].enabled
+    let selected$ = combineLatest([
+        state.selectedPackage$,
+        state.selectedPanel$
+    ]).pipe(
+        map( ([pack, panelId]) =>  panelId == target && pack == packState.pack)
+    )
     return {
         tag:'li',
             innerText: tabsDisplayInfo[target].title,
             class: attr$( 
-                state.selectedPanel$,
-                (panelId) => panelId == target ? 'fv-text-focus' : (enabled ? 'fv-pointer' : 'fv-text-background-alt')
+                selected$,
+                (selected) => selected ? 'fv-text-focus' : (enabled ? 'fv-pointer' : 'fv-text-background-alt')
             ),
             style:{'user-select': 'none'},
             onclick: (ev) => {
-                state.select( packState.pack.name, packState.pack.namespace, target)
+                state.select(packState.pack.name, packState.pack.namespace, target)
                
                 ev.stopPropagation() 
             }
@@ -157,10 +165,11 @@ function sectionGeneric(
     state: AppState
     ){
 
-    let sectionSelected$ = state.selectedPanel$.pipe(
-        mergeMap( selected => packState.childrenPanels$.pipe( map( (targets) => targets.includes(selected)) ) )
+    let sectionSelected$ = state.selectedPackage$.pipe(
+        map( selected => {
+            return selected == packState.pack 
+        })
     )
-
     return {
         class: 'my-2 ',
         children:[
