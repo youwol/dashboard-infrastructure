@@ -65,7 +65,7 @@ export class KongAdminView implements VirtualDOM {
                     class: 'flex-grow-1 overflow-auto',
                     children: [
                         {
-                            class: 'h-50 overflow-auto',
+                            class: '',
                             children: [
                                 child$(
                                     Backend.kong.kongAdminServices$(this.state.pack.namespace),

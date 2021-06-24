@@ -3,6 +3,8 @@ import { Backend } from "../backend/router"
 import { Status as ScyllaStatus } from "./scylla.router"
 import { innerTabClasses } from "../utils-view"
 import { ScyllaState } from "./scylla.view"
+import { helmView } from "../helm/helm.view"
+import { HelmPackage } from "../environment/models"
 
 
 export class GeneralView implements VirtualDOM {
@@ -22,11 +24,7 @@ export class GeneralView implements VirtualDOM {
                     child$(
                         state.status$,
                         (status: ScyllaStatus) => {
-
-                            if(!status.installed ) 
-                                return this.installView() 
-
-                            return this.installedView(status)
+                            return helmView(status, state.pack as HelmPackage, Backend.scylla)
                         }
                     ),
                 ]
@@ -37,31 +35,4 @@ export class GeneralView implements VirtualDOM {
             elem.ownSubscriptions(...state.subscribe())
         }
     }
-
-    installView(){
-
-        return {
-            class: 'fv-pointer p-2 border rounded fv-text-focus fv-hover-bg-background-alt',
-            innerText: 'Install',
-            style: {width:'fit-content'},
-            onclick: (ev) => {
-                Backend.scylla.triggerInstall(this.state.pack.namespace, {values:{}})
-            }
-        }
-    }
-
-    installedView(status : ScyllaStatus){
-
-        return {
-            class: 'flex-grow-1  p-2',
-            children: [
-                this.statusView(status)
-            ]
-        }
-    }
-
-    statusView( status : ScyllaStatus){
-        return {}
-    }
-
 }

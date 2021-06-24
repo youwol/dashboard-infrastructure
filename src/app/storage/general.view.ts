@@ -4,6 +4,8 @@ import { Backend } from "../backend/router"
 import { Status as StorageStatus } from "./storage.router"
 import { innerTabClasses } from "../utils-view"
 import { StorageState } from "./storage.view"
+import { helmView } from "../helm/helm.view"
+import { HelmPackage } from "../environment/models"
 
 
 export class GeneralView implements VirtualDOM {
@@ -16,18 +18,14 @@ export class GeneralView implements VirtualDOM {
 
     constructor(public state: StorageState) {
         
-        this.children = [
+        this.children =[
             {
                 class: 'flex-grow-1 w-100 h-100',
                 children: [
                     child$(
                         state.status$,
                         (status: StorageStatus) => {
-
-                            if(!status.installed ) 
-                                return this.installView() 
-
-                            return this.installedView(status)
+                            return helmView(status, state.pack as HelmPackage, Backend.storage)
                         }
                     ),
                 ]

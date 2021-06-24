@@ -1,9 +1,10 @@
 import { child$, HTMLElement$, VirtualDOM } from "@youwol/flux-view"
-import { Observable, Subscription } from "rxjs"
 import { Backend } from "../backend/router"
 import { Status as KongStatus } from "./kong.router"
 import { innerTabClasses } from "../utils-view"
 import { KongState } from "./kong.view"
+import { helmView } from "../helm/helm.view"
+import { HelmPackage } from "../environment/models"
 
 
 export class GeneralView implements VirtualDOM {
@@ -20,16 +21,10 @@ export class GeneralView implements VirtualDOM {
             {
                 class: 'flex-grow-1 w-100 h-100',
                 children: [
-                    {
-                        innerText: "Kong general"
-                    },
                     child$(
                         state.status$,
                         (status: KongStatus) => {
-
-                            if(!status.installed ) 
-                                return this.installView() 
-                            return this.infoView(status)
+                            return helmView(status, state.pack as HelmPackage, Backend.kong)
                         }
                     ),
                 ]
@@ -38,26 +33,6 @@ export class GeneralView implements VirtualDOM {
 
         this.connectedCallback = (elem: HTMLElement$) => {
             elem.ownSubscriptions(...state.subscribe())
-        }
-    }
-
-    installView(){
-
-        return {
-            class: 'fv-pointer p-2 border rounded fv-text-focus fv-hover-bg-background-alt',
-            innerText: 'Install',
-            style: {width:'fit-content'},
-            onclick: (ev) => {
-                Backend.kong.triggerInstall(this.state.pack.namespace, {values:{}})
-            }
-        }
-    }
-
-    infoView(status: KongStatus){
-
-        return {
-            class: 'flex-grow-1  p-2',
-            children: []
         }
     }
 }

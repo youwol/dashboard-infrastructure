@@ -6,6 +6,8 @@ import { Backend } from "../backend/router"
 import { Status as PostgreSqlStatus } from "./postgre-sql.router"
 import { innerTabClasses } from "../utils-view"
 import { PostgreSqlState } from "./postgre-sql.view"
+import { HelmPackage } from "../environment/models"
+import { helmView } from "../helm/helm.view"
 
 
 
@@ -26,10 +28,7 @@ export class GeneralView implements VirtualDOM {
                     child$(
                         state.status$,
                         (status: PostgreSqlStatus) => {
-
-                            if(!status.installed ) 
-                                return this.installView() 
-                            return this.infoView(status)
+                            return helmView(status, state.pack as HelmPackage, Backend.postgreSql)
                         }
                     ),
                 ]
