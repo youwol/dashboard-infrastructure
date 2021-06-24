@@ -1,15 +1,13 @@
-import { Interface } from "node:readline"
-import { BehaviorSubject, combineLatest, Observable, Subject } from "rxjs"
-import { map } from "rxjs/operators"
+
+import { BehaviorSubject, Subject } from "rxjs"
 import { Backend } from "./backend/router"
 import { DocDbState, DocDbView } from "./docdb/docdb.view"
-import { EnvironmentState, EnvironmentView } from "./environment/environment.view"
 import { Package } from "./environment/models"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
 import { KongState, KongView } from "./kong/kong.view"
 import { MinioState, MinioView } from "./minio/minio.view"
-import { DeploymentStatus, PackageState, SanityEnum } from "./models"
-import { PanelId, tabsDisplayInfo } from "./panels-info"
+import { PackageState } from "./models"
+import { PanelId } from "./panels-info"
 import { PostgreSqlState, PostgreSqlView } from "./postgre-sql/postgre-sql.view"
 import { RedisState, RedisView } from "./redis/redis.view"
 import { ScyllaState, ScyllaView } from "./scylla/scylla.view"
@@ -21,7 +19,6 @@ class PackageFactory<TState, TView>{
 }
 
 let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
-    environment: new PackageFactory(EnvironmentState, EnvironmentView),
     k8sDashboard: new PackageFactory(K8sDashboardState, K8sDashboardView),
     postgresql: new PackageFactory(PostgreSqlState, PostgreSqlView),
     api: new PackageFactory(KongState, KongView),
