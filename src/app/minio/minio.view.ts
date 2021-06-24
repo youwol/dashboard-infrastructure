@@ -2,22 +2,22 @@ import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
-import { PanelId } from '../panels-info'
+import { PanelId, tabsDisplayInfo } from '../panels-info'
 import { GeneralView } from './general.view'
 import { Status as MinioStatus} from './minio.router'
 import { PackageState } from '../models'
 import { Package } from '../environment/models'
+import { ExplorerView } from './explorer.view'
 
-
-let titles = {
-    [PanelId.MinioGeneral] :'General'
-}
 
 export class MinioState  implements PackageState {
 
     status$ : Observable<MinioStatus>
 
-    childrenPanels$ = new BehaviorSubject([PanelId.MinioGeneral])
+    childrenPanels$ = new BehaviorSubject([
+        PanelId.MinioGeneral, 
+        PanelId.MinioExplorer
+    ])
 
     constructor(
         public readonly pack: Package, 
@@ -35,13 +35,22 @@ export class MinioState  implements PackageState {
 class GeneralTabData extends Tabs.TabData{
     
     constructor(public readonly state: MinioState){
-        super( PanelId.MinioGeneral, titles[PanelId.MinioGeneral])
+        super( PanelId.MinioGeneral, tabsDisplayInfo[PanelId.MinioGeneral].title)
     }
     view() {
         return new GeneralView(this.state)
     }
 }
 
+class ExplorerTabData extends Tabs.TabData{
+    
+    constructor(public readonly state: MinioState){
+        super( PanelId.MinioExplorer, tabsDisplayInfo[PanelId.MinioExplorer].title)
+    }
+    view() {
+        return new ExplorerView(this.state)
+    }
+}
 
 export class MinioView implements VirtualDOM{
 
@@ -53,7 +62,8 @@ export class MinioView implements VirtualDOM{
     constructor(state:MinioState){
 
         let tabsData = [
-            new GeneralTabData(state)            
+            new GeneralTabData(state),            
+            new ExplorerTabData(state)            
         ]
         
         this.children = [
