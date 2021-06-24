@@ -17,20 +17,6 @@ export function clusterSummary(environment: Environment){
                 class:'d-flex',
                 children:[
                     {
-                        innerText: "K8s context"
-                    },
-                    {   class:'px-2 fv-text-focus',
-                        innerText: environment.deploymentConfiguration.general.contextName
-                    },
-                ]
-            },
-            {
-                tag:'hr', class:'fv-color-primary'
-            },
-            {
-                class:'d-flex',
-                children:[
-                    {
                         innerText: "K8s API proxy"
                     },
                     {   tag:'a',

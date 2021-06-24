@@ -1,20 +1,16 @@
 import { VirtualDOM, child$, attr$, children$ } from '@youwol/flux-view'
-import { BehaviorSubject, Observable, Subject } from 'rxjs'
+import { Observable } from 'rxjs'
 import { map, mergeMap } from 'rxjs/operators'
 import { AppState } from './app-state'
-import { Backend } from './backend/router'
-import { GeneralState } from './environment/cluster.view'
-import { Environment, Package } from './environment/models'
 import { DeploymentStatus, PackageState, SanityEnum } from './models'
 import { PanelId, tabsDisplayInfo } from './panels-info'
-import { Tabs } from '@youwol/fv-tabs'
 import { ExpandableGroup } from '@youwol/fv-group'
 
 
 export class SideBarView implements VirtualDOM{
 
     public readonly tag = 'div'
-    public readonly class = "d-flex flex-column py-5 px-2 border h-100 "
+    public readonly class = "d-flex flex-column p-2 border h-100 "
     public readonly style = {'min-width': '25%'}
 
     public readonly children
@@ -22,12 +18,6 @@ export class SideBarView implements VirtualDOM{
     constructor( public readonly state: AppState ){
 
         this.children = [
-            child$(
-                state.clusterContext$,
-                (contextName) => {
-                    return {innerText: contextName, class:"fv-text-focus"}
-                }
-            ),
             child$(
                 state.packagesState$,
                 (packages: Array<PackageState>) => this.namespacesView(packages) 
