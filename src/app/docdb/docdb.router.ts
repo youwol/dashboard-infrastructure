@@ -1,7 +1,8 @@
-import { ReplaySubject } from "rxjs"
+import { Observable, ReplaySubject } from "rxjs"
 import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
 import { EnvironmentRouter } from "../environment/environment.router"
+import { Backend } from "../backend/router"
 
 
 export interface Status{
@@ -15,43 +16,18 @@ export interface Status{
 export class DocDbRouter{
 
     private static urlBase = '/api/youwol-infra/docdb'
-    private static webSocket$ : ReplaySubject<any> 
 
-    public static status$ = new ReplaySubject<Status>(1)
+    public static webSocket$ : ReplaySubject<any> 
+    public static statusDict$ : {[key:string]: ReplaySubject<Status>} = {}
     
     static headers = {}
 
     static connectWs(){
-
-        if(DocDbRouter.webSocket$)
-            return DocDbRouter.webSocket$
-
-        DocDbRouter.webSocket$ = new ReplaySubject()
-        let socket_url = `ws://localhost:2260/docdb/ws`
-        var ws = new WebSocket(socket_url);
-
-        ws.onmessage = (event) => {
-            let d = JSON.parse(event.data)
-            DocDbRouter.webSocket$.next(d)
-            if(instanceOfDeploymentStatus(d))
-                DocDbRouter.status$.next(d as Status) 
-        };
-        
-        return DocDbRouter.webSocket$
+        return Backend.connectWs<Status>('docdb', DocDbRouter)
     }
 
-    static watch(namespace: string) {
-
-        DocDbRouter.connectWs().pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$ )
-        ).subscribe( () => {
-            DocDbRouter.triggerStatus(namespace)
-        })
-        
-        return DocDbRouter.status$.pipe(
-            filter( (message: any) => message.namespace == namespace)
-        )
+    static watch(namespace: string): Observable<Status> {
+        return Backend.watch(namespace, DocDbRouter)
     }
 
     static triggerStatus(namespace: string){

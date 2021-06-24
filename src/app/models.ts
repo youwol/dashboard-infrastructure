@@ -30,6 +30,7 @@ export interface PackageState{
     selectedPanel$: Subject<PanelId>
     childrenPanels$: BehaviorSubject<PanelId[]>
     status$: Observable<DeploymentStatus>
+    subscribe()
 }
 
 

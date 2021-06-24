@@ -10,6 +10,8 @@ import { PostgreSqlRouter } from "../postgre-sql/postgre-sql.router";
 import { ScyllaRouter } from "../scylla/scylla.router";
 import { StorageRouter } from "../storage/storage.router";
 import { RedisRouter } from "../redis/redis.router";
+import { mergeMap, take } from "rxjs/operators";
+import { instanceOfDeploymentStatus } from "../models";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -67,4 +69,42 @@ export class Backend {
     static docdb = DocDbRouter
     static storage = StorageRouter
     static redis = RedisRouter
+    static connectWs<TStatus>(routePath: string, RouterType){
+
+        if(RouterType.webSocket$)
+            return RouterType.webSocket$
+
+        RouterType.webSocket$ = new ReplaySubject()
+        let socket_url = `ws://localhost:2260/${routePath}/ws`
+        var ws = new WebSocket(socket_url);
+
+        ws.onmessage = (event) => {
+            let d = JSON.parse(event.data)
+            RouterType.webSocket$.next(d)
+            let ns = d.namespace
+            if(ns && ! RouterType.statusDict$[ns]){
+                RouterType.statusDict$[ns] = new ReplaySubject<TStatus>(1)
+            }
+            if(instanceOfDeploymentStatus(d)){
+                RouterType.statusDict$[ns].next(d)
+            }
+        };
+        
+        return RouterType.webSocket$
+    }
+
+
+    static watch<TStatus>(namespace: string, RouterType) : ReplaySubject<TStatus> {
+
+        RouterType.connectWs().pipe(
+            take(1),
+            mergeMap( () => EnvironmentRouter.environments$ )
+        ).subscribe( () => {
+            RouterType.triggerStatus(namespace)
+        })
+        if( ! RouterType.statusDict$[namespace]){
+            RouterType.statusDict$[namespace] = new ReplaySubject<TStatus>(1)
+        }
+        return RouterType.statusDict$[namespace] 
+    }
 }

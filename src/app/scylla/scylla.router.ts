@@ -2,7 +2,7 @@ import { Observable, ReplaySubject } from "rxjs"
 import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
 import { EnvironmentRouter } from "../environment/environment.router"
-import { createObservableFromFetch } from "../backend/router"
+import { Backend, createObservableFromFetch } from "../backend/router"
 
 
 export interface Status{
@@ -43,43 +43,18 @@ export interface ScyllaTables{
 export class ScyllaRouter{
 
     private static urlBase = '/api/youwol-infra/scylla'
-    private static webSocket$ : ReplaySubject<any> 
-
-    public static status$ = new ReplaySubject<Status>(1)
+    public static webSocket$ : ReplaySubject<any> 
+    public static statusDict$ : {[key:string]: ReplaySubject<Status>} = {}
     
     static headers = {}
 
+    
     static connectWs(){
-
-        if(ScyllaRouter.webSocket$)
-            return ScyllaRouter.webSocket$
-
-        ScyllaRouter.webSocket$ = new ReplaySubject()
-        let socket_url = `ws://localhost:2260/scylla/ws`
-        var ws = new WebSocket(socket_url);
-
-        ws.onmessage = (event) => {
-            let d = JSON.parse(event.data)
-            ScyllaRouter.webSocket$.next(d)
-            if(instanceOfDeploymentStatus(d))
-                ScyllaRouter.status$.next(d as Status) 
-        };
-        
-        return ScyllaRouter.webSocket$
+        return Backend.connectWs<Status>('scylla', ScyllaRouter)
     }
 
-    static watch(namespace: string) {
-
-        ScyllaRouter.connectWs().pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$ )
-        ).subscribe( () => {
-            ScyllaRouter.triggerStatus(namespace)
-        })
-        
-        return ScyllaRouter.status$.pipe(
-            filter( (message: any) => message.namespace == namespace)
-        )
+    static watch(namespace: string): Observable<Status> {
+        return Backend.watch(namespace, ScyllaRouter)
     }
 
     static triggerStatus(namespace: string){

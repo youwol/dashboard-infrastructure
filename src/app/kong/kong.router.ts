@@ -2,7 +2,7 @@ import { Observable, ReplaySubject } from "rxjs"
 import { filter, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
 import { EnvironmentRouter } from "../environment/environment.router"
-import { createObservableFromFetch } from "../backend/router"
+import { Backend, createObservableFromFetch } from "../backend/router"
 
 
 export interface Status{
@@ -43,44 +43,18 @@ export interface RoutesResp{
 
 export class KongRouter{
 
-    private static urlBase = '/api/youwol-infra/kong'
-    private static webSocket$ : ReplaySubject<any> 
-
-    public static status$ = new ReplaySubject<Status>(1)
+    private static urlBase = '/api/youwol-infra/kong' 
+    public static webSocket$ : ReplaySubject<any> 
+    public static statusDict$ : {[key:string]: ReplaySubject<Status>} = {}
     
     static headers = {}
 
     static connectWs(){
-
-        if(KongRouter.webSocket$)
-            return KongRouter.webSocket$
-
-        KongRouter.webSocket$ = new ReplaySubject()
-        let socket_url = `ws://localhost:2260/kong/ws`
-        var ws = new WebSocket(socket_url);
-
-        ws.onmessage = (event) => {
-            let d = JSON.parse(event.data)
-            KongRouter.webSocket$.next(d)
-            if(instanceOfDeploymentStatus(d))
-                KongRouter.status$.next(d as Status) 
-        };
-        
-        return KongRouter.webSocket$
+        return Backend.connectWs<Status>('kong', KongRouter)
     }
 
-    static watch(namespace: string) {
-
-        KongRouter.connectWs().pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$ )
-        ).subscribe( () => {
-            KongRouter.triggerStatus(namespace)
-        })
-        
-        return KongRouter.status$.pipe(
-            filter( (message: any) => message.namespace == namespace)
-        )
+    static watch(namespace: string): Observable<Status> {
+        return Backend.watch(namespace, KongRouter)
     }
 
     static triggerStatus(namespace: string){
