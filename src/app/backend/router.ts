@@ -23,6 +23,18 @@ export function createObservableFromFetch( request, extractFct = (d) =>d ){
           .catch(err => observer.error(err)); 
     });
 }
+export function createTextObservableFromFetch( request, extractFct = (d) =>d ){
+
+    return new Observable(observer => {
+        fetch(request)
+          .then(response => response.text()) // or text() or blob() etc.
+          .then(data => {
+            observer.next( extractFct(data));
+            observer.complete();
+          })
+          .catch(err => observer.error(err)); 
+    });
+}
 
 export class Backend {
 
