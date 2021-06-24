@@ -3,10 +3,10 @@ import { Tabs } from '@youwol/fv-tabs'
 import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralView } from './general.view'
 import { Status as RedisStatus} from './redis.router'
 import { PackageState } from '../models'
 import { Package } from '../environment/models'
+import { HelmTabView } from '../helm/helm.view'
 
 
 let titles = {
@@ -36,7 +36,7 @@ class GeneralTabData extends Tabs.TabData{
         super( PanelId.RedisGeneral, titles[PanelId.RedisGeneral])
     }
     view() {
-        return new GeneralView(this.generalState)
+        return new HelmTabView(this.generalState, Backend.redis)
     }
 }
 

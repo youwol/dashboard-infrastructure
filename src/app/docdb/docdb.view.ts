@@ -1,15 +1,12 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralView } from './general.view'
 import { Status as DocDbStatus} from '../redis/redis.router'
 import { PackageState } from '../models'
 import { Package } from '../environment/models'
-import { EnvironmentRouter } from '../environment/environment.router'
-import { DocDbRouter } from './docdb.router'
-import { filter, mergeMap, take } from 'rxjs/operators'
+import { HelmTabView } from '../helm/helm.view'
 
 
 let titles = {
@@ -40,7 +37,7 @@ class GeneralTabData extends Tabs.TabData{
         super( PanelId.DocDbGeneral, titles[PanelId.DocDbGeneral])
     }
     view() {
-        return new GeneralView(this.state)
+        return new HelmTabView(this.state, Backend.docdb)
     }
 }
 

@@ -1,10 +1,12 @@
-import { child$, VirtualDOM } from "@youwol/flux-view";
+import { child$, HTMLElement$, VirtualDOM } from "@youwol/flux-view";
 import { ExpandableGroup } from "@youwol/fv-group";
 import { ImmutableTree } from "@youwol/fv-tree";
 import { Subject } from "rxjs";
 import { FindValueSubscriber } from "rxjs/internal/operators/find";
 import { mergeMap } from "rxjs/operators";
 import { HelmPackage, Package } from "../environment/models";
+import { PackageState } from "../models";
+import { innerTabClasses } from "../utils-view";
 import { DataTreeView } from "../views/data-tree.view";
 import {HelmRouter} from './helm.router'
 
@@ -43,16 +45,46 @@ class FolderNode extends ChartNode{
 }
 
 
+export class HelmTabView implements VirtualDOM {
+
+    public readonly tag = 'div'
+    public readonly children: Array<VirtualDOM>
+    public readonly class = innerTabClasses
+
+    connectedCallback: (elem) => void
+
+    constructor(public readonly state: PackageState, router) {
+        
+        this.children = [
+            {
+                class: 'flex-grow-1 w-100 h-100',
+                children: [
+                    child$(
+                        state.status$,
+                        (status) => {
+                            return helmView(status, state.pack as HelmPackage, router)
+                        }
+                    ),
+                ]
+            }
+        ]
+
+        this.connectedCallback = (elem: HTMLElement$) => {
+            elem.ownSubscriptions(...state.subscribe())
+        }
+    }
+}
+
+
 export function helmView(
     status: {installed:boolean},
     pack: HelmPackage,
     router: any): VirtualDOM{
 
-    console.log("Pack", pack)
     return {
         class:'h-100',
         children:[
-            installUpgradeView(status, router),
+            installUpgradeView(pack, status, router),
             {
                 tag: 'hr', class: 'fv-color-primary'
             },
@@ -67,6 +99,7 @@ export function helmView(
 
 
 function installUpgradeView(
+    pack: HelmPackage,
     {installed} : {installed:boolean},
     router: any
     ): VirtualDOM{
@@ -80,8 +113,8 @@ function installUpgradeView(
                 style: {width:'fit-content'},
                 onclick: (ev) => {
                     installed 
-                        ? router.triggerUpgrade(this.state.pack.namespace, {values:{}})
-                        : router.triggerInstall(this.state.pack.namespace, {values:{}})
+                        ? router.triggerUpgrade(pack.namespace, {values:{}})
+                        : router.triggerInstall(pack.namespace, {values:{}})
                 }
             },
             {

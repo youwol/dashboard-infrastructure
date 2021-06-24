@@ -1,13 +1,13 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId, tabsDisplayInfo } from '../panels-info'
-import { GeneralView } from './general.view'
 import { Status as ScyllaStatus} from './scylla.router'
 import { PackageState } from '../models'
 import { Package } from '../environment/models'
 import { ExplorerView } from './explorer.view'
+import { HelmTabView } from '../helm/helm.view'
 
 
 
@@ -36,7 +36,7 @@ class GeneralTabData extends Tabs.TabData{
     }
 
     view() {
-        return new GeneralView(this.state)
+        return new HelmTabView(this.state, Backend.scylla)
     }
 }
 

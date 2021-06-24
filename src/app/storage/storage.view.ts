@@ -1,12 +1,12 @@
 import { VirtualDOM } from '@youwol/flux-view'
 import { Tabs } from '@youwol/fv-tabs'
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 import { Backend } from '../backend/router'
 import { PanelId } from '../panels-info'
-import { GeneralView } from './general.view'
 import { Status as StorageStatus} from './storage.router'
 import { PackageState } from '../models'
 import { Package } from '../environment/models'
+import { HelmTabView } from '../helm/helm.view'
 
 
 let titles = {
@@ -36,7 +36,7 @@ class GeneralTabData extends Tabs.TabData{
         super( PanelId.StorageGeneral, titles[PanelId.StorageGeneral])
     }
     view() {
-        return new GeneralView(this.state)
+        return new HelmTabView(this.state,Backend.storage)
     }
 }
 
