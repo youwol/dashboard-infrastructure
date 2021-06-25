@@ -49,14 +49,6 @@ export class KongRouter{
     
     static headers = {}
 
-    static connectWs(){
-        return Backend.connectWs<Status>('kong', KongRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, KongRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${KongRouter.urlBase}/${namespace}/status`, { headers: KongRouter.headers })

@@ -24,14 +24,6 @@ export class MinioRouter{
 
     static headers = {}
 
-    static connectWs(){
-        return Backend.connectWs<Status>('minio', MinioRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, MinioRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${MinioRouter.urlBase}/${namespace}/status`, { headers: MinioRouter.headers })

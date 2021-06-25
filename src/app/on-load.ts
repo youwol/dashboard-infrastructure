@@ -9,6 +9,7 @@ import { GeneralState, GeneralView } from './environment/cluster.view';
 
 require('./style.css');
 
+await Backend.connectWs()
 
 let appState = new AppState()
 
@@ -16,6 +17,7 @@ let sideBar = new SideBarView(appState)
 
 let clusterState = new GeneralState()
 let clusterView = new GeneralView(clusterState)
+
 
 let vDOM = {
     class: 'd-flex fv-text-primary h-100 w-100',

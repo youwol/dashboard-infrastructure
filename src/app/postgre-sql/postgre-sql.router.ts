@@ -21,14 +21,6 @@ export class PostgreSqlRouter{
     
     static headers = {}
 
-    static connectWs(){
-        return Backend.connectWs<Status>('postgre-sql', PostgreSqlRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, PostgreSqlRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${PostgreSqlRouter.urlBase}/${namespace}/status`, { headers: PostgreSqlRouter.headers })

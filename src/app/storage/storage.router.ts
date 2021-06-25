@@ -24,14 +24,6 @@ export class StorageRouter{
     
     static headers = {}
 
-    static connectWs(){
-        return Backend.connectWs<Status>('storage', StorageRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, StorageRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${StorageRouter.urlBase}/${namespace}/status`, { headers: StorageRouter.headers })

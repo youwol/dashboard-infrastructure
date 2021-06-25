@@ -62,6 +62,9 @@ export class Backend {
         CDNRouter.headers=headers
     }
 
+    private static webSocket$ : ReplaySubject<any>
+    private static messagesByPackages$ : {[key:string]: ReplaySubject<any>} = {}
+    private static logs$ = new ReplaySubject()
 
     static environment = EnvironmentRouter
     static logs = LogsRouter
@@ -75,42 +78,50 @@ export class Backend {
     static redis = RedisRouter
     static cdn = CDNRouter
 
-    static connectWs<TStatus>(routePath: string, RouterType){
+    static connectWs(): Promise<any>{
 
-        if(RouterType.webSocket$)
-            return RouterType.webSocket$
+        let promise = new Promise( (resolve, reject) => {
 
-        RouterType.webSocket$ = new ReplaySubject()
-        let socket_url = `ws://localhost:2260/${routePath}/ws`
-        var ws = new WebSocket(socket_url);
-
-        ws.onmessage = (event) => {
-            let d = JSON.parse(event.data)
-            RouterType.webSocket$.next(d)
-            let ns = d.namespace
-            if(ns && ! RouterType.statusDict$[ns]){
-                RouterType.statusDict$[ns] = new ReplaySubject<TStatus>(1)
+            if(Backend.webSocket$){
+                resolve(Backend.webSocket$) 
+                return 
             }
-            if(instanceOfDeploymentStatus(d)){
-                RouterType.statusDict$[ns].next(d)
-            }
-        };
-        
-        return RouterType.webSocket$
+            Backend.webSocket$ = new ReplaySubject()
+            let socket_url = `ws://localhost:2260/ws`
+            var ws = new WebSocket(socket_url);
+            
+            ws.onmessage = (event) => {
+                let d = JSON.parse(event.data)
+                Backend.webSocket$.next(d)
+                if(d.type == 'log' )
+                    Backend.logs$.next(d)
+
+                if(d.package){
+                    let channel$ = Backend.channel$(d.package.name, d.package.namespace)
+                    channel$.next(d)
+                }
+            };
+            Backend.webSocket$.pipe(
+                take(1)
+            ).subscribe(
+                () => {
+                    resolve(Backend.webSocket$) 
+                }
+            )
+            //return resolve(Backend.webSocket$)
+        })
+        return promise        
     }
 
 
-    static watch<TStatus>(namespace: string, RouterType) : ReplaySubject<TStatus> {
+    static channel$(name: string, namespace: string) : ReplaySubject<any> {
 
-        RouterType.connectWs().pipe(
-            take(1),
-            mergeMap( () => EnvironmentRouter.environments$ )
-        ).subscribe( () => {
-            RouterType.triggerStatus(namespace)
-        })
-        if( ! RouterType.statusDict$[namespace]){
-            RouterType.statusDict$[namespace] = new ReplaySubject<TStatus>(1)
+        let packageId = `${namespace}#${name}`
+        if(!Backend.messagesByPackages$[packageId]){
+            console.log("create channel", packageId)
+            Backend.messagesByPackages$[packageId] = new ReplaySubject() 
         }
-        return RouterType.statusDict$[namespace] 
+
+        return Backend.messagesByPackages$[packageId]
     }
 }

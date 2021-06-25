@@ -22,14 +22,6 @@ export class DocDbRouter{
     
     static headers = {}
 
-    static connectWs(){
-        return Backend.connectWs<Status>('docdb', DocDbRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, DocDbRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${DocDbRouter.urlBase}/${namespace}/status`, { headers: DocDbRouter.headers })

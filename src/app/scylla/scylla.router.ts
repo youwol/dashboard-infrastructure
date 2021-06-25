@@ -48,15 +48,6 @@ export class ScyllaRouter{
     
     static headers = {}
 
-    
-    static connectWs(){
-        return Backend.connectWs<Status>('scylla', ScyllaRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, ScyllaRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${ScyllaRouter.urlBase}/${namespace}/status`, { headers: ScyllaRouter.headers })

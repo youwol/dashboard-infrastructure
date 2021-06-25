@@ -20,14 +20,6 @@ export class CDNRouter{
     
     static headers = {}
 
-    static connectWs(){
-        return Backend.connectWs<Status>('cdn', CDNRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, CDNRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${CDNRouter.urlBase}/${namespace}/status`, { headers: CDNRouter.headers })

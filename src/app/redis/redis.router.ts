@@ -21,15 +21,6 @@ export class RedisRouter{
     
     static headers = {}
 
-    
-    static connectWs(){
-        return Backend.connectWs<Status>('redis', RedisRouter)
-    }
-
-    static watch(namespace: string): Observable<Status> {
-        return Backend.watch(namespace, RedisRouter)
-    }
-
     static triggerStatus(namespace: string){
 
         let r = new Request( `${RedisRouter.urlBase}/${namespace}/status`, { headers: RedisRouter.headers })
