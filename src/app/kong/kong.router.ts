@@ -10,6 +10,10 @@ export interface Status{
     installed: boolean
     sanity: SanityEnum
     pending: boolean
+    package: {
+        acmePlugin: string,
+        acmeHosts: Array<string>
+    }
 }
 
 export interface ServiceResp{
@@ -82,4 +86,12 @@ export class KongRouter{
         let request = new Request(url, { method: 'GET', headers: KongRouter.headers })
         return createObservableFromFetch(request) as Observable<RoutesResp>
     }
+
+    static triggerInstallCertificates(namespace: string ){
+
+        let r = new Request( `${KongRouter.urlBase}/${namespace}/acme/install-certificates`, 
+        { method: 'POST', headers: KongRouter.headers })
+        fetch(r).then()
+    }
+
 }

@@ -8,6 +8,7 @@ import { KongAdminView } from './kong-admin.view'
 import { Package } from '../environment/models'
 import { PackageState } from '../models'
 import { HelmTabView } from '../helm/helm.view'
+import { KongAcmeView } from './kong-acme.view'
 
 
 let titles = {
@@ -17,7 +18,7 @@ let titles = {
 
 export class KongState extends PackageState {
 
-    childrenPanels$ = new BehaviorSubject([PanelId.KongGeneral, PanelId.KongAdmin])
+    childrenPanels$ = new BehaviorSubject([PanelId.KongGeneral, PanelId.KongAdmin,  PanelId.KongAcme])
     
     constructor(
         pack: Package,
@@ -47,6 +48,15 @@ class KongAdminTabData extends Tabs.TabData{
     }
 }
 
+class KongAcmeTabData extends Tabs.TabData{
+    
+    constructor(public readonly kongAdminState){
+        super( PanelId.KongAcme, titles[PanelId.KongAcme])
+    }
+    view() {
+        return new KongAcmeView(this.kongAdminState)
+    }
+}
 
 
 export class KongView implements VirtualDOM{
@@ -65,7 +75,8 @@ export class KongView implements VirtualDOM{
 
         let tabsData = [
             new GeneralTabData(state),
-            new KongAdminTabData(state),            
+            new KongAdminTabData(state),   
+            new KongAcmeTabData(state),           
         ]
         
         this.children = [
