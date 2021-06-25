@@ -13,20 +13,15 @@ let titles = {
     [PanelId.RedisGeneral] :'General'
 }
 
-export class RedisState implements PackageState {
+export class RedisState extends PackageState {
 
-    status$ : Observable<RedisStatus>
     childrenPanels$ = new BehaviorSubject([PanelId.RedisGeneral])
 
     constructor(
-        public readonly pack: Package, 
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
         ){
-        this.status$ = Backend.redis.watch(pack.namespace)
-    }
-
-    subscribe() : Array<Subscription> {
-        return []
+            super(pack, selectedPanel$, Backend.redis)
     }
 }
 

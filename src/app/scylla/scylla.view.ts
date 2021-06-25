@@ -11,21 +11,15 @@ import { HelmTabView } from '../helm/helm.view'
 
 
 
-export class ScyllaState implements PackageState{
-
-    status$ : Observable<ScyllaStatus>
+export class ScyllaState extends PackageState{
 
     childrenPanels$ = new BehaviorSubject([PanelId.ScyllaGeneral,PanelId.ScyllaExplorer])
 
     constructor(
-        public readonly pack: Package, 
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
         ){
-        this.status$ = Backend.scylla.watch(pack.namespace)
-    }
-
-    subscribe() : Array<Subscription> {
-        return []
+            super(pack, selectedPanel$, Backend.scylla)
     }
 }
 

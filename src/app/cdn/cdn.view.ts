@@ -9,22 +9,16 @@ import { Package } from '../environment/models'
 import { HelmTabView } from '../helm/helm.view'
 
 
-export class CDNState implements PackageState{
+export class CDNState extends PackageState{
 
-    status$  :  Observable<CDNStatus>
-    
     childrenPanels$ = new BehaviorSubject([PanelId.CDNGeneral])
 
     constructor(
-        public readonly pack: Package,
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
         ){
-
-        this.status$ = Backend.cdn.watch(pack.namespace)
+            super(pack, selectedPanel$, Backend.cdn)
     }
-
-    subscribe() : Array<Subscription> {return []}
-
 }
 
 class GeneralTabData extends Tabs.TabData{

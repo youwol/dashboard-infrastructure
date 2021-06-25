@@ -13,20 +13,16 @@ let titles = {
     [PanelId.StorageGeneral] :'General'
 }
 
-export class StorageState implements PackageState{
+export class StorageState extends PackageState{
 
     status$ : Observable<StorageStatus>
     childrenPanels$ = new BehaviorSubject([PanelId.StorageGeneral])
 
     constructor(
-        public readonly pack: Package,
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
-    ){
-        this.status$ = Backend.storage.watch(pack.namespace)
-    }
-
-    subscribe(): Array<Subscription> {
-        return []
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
+        ){
+            super(pack, selectedPanel$, Backend.storage)
     }
 }
 

@@ -15,20 +15,15 @@ let titles = {
     [PanelId.K8sDashboardGeneral]: 'General'
 }
 
-export class K8sDashboardState implements PackageState {
+export class K8sDashboardState extends PackageState {
 
-    status$ : Observable<K8sDashboardStatus>
     childrenPanels$ = new BehaviorSubject<PanelId[]>([PanelId.K8sDashboardGeneral])
 
     constructor(
-        public readonly pack: Package,
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
-    ) {
-        this.status$ = Backend.k8sDashboard.watch(pack.namespace)
-    }
-
-    subscribe() : Array<Subscription> {
-        return []
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
+        ){
+            super(pack, selectedPanel$, Backend.k8sDashboard)
     }
 }
 

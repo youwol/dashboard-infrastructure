@@ -1,4 +1,5 @@
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject, Subscription } from "rxjs";
+import { Backend } from "./backend/router";
 import { Package } from "./environment/models";
 import { PanelId } from "./panels-info";
 
@@ -25,12 +26,24 @@ export interface Selection{
     panel: PanelId
 }
 
-export interface PackageState{
-    pack: Package
-    selectedPanel$: Subject<PanelId>
+export abstract class PackageState{
+    
+    
     childrenPanels$: BehaviorSubject<PanelId[]>
     status$: Observable<DeploymentStatus>
-    subscribe()
+
+    constructor(
+        public readonly pack: Package,
+        public readonly selectedPanel$: BehaviorSubject<PanelId>,
+        public readonly Router: any
+        ){
+            this.status$ = Backend.channel$(pack.name, pack.namespace)
+            Router.triggerStatus(pack.namespace)
+        }
+
+    subscribe() : Subscription[] {
+        return []
+    }
 }
 
 

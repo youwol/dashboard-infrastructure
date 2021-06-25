@@ -13,22 +13,16 @@ let titles = {
     [PanelId.DocDbGeneral] :'General'
 }
 
-export class DocDbState implements PackageState{
+export class DocDbState extends PackageState{
 
-    status$  :  Observable<DocDbStatus>
-    
     childrenPanels$ = new BehaviorSubject([PanelId.DocDbGeneral])
 
     constructor(
-        public readonly pack: Package,
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
         ){
-
-        this.status$ = Backend.docdb.watch(pack.namespace)
+            super(pack, selectedPanel$, Backend.docdb)
     }
-
-    subscribe() : Array<Subscription> {return []}
-
 }
 
 class GeneralTabData extends Tabs.TabData{

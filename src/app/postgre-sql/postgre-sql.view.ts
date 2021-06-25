@@ -13,20 +13,15 @@ let titles = {
     [PanelId.PostgreSqlGeneral] :'General'
 }
 
-export class PostgreSqlState implements PackageState{
+export class PostgreSqlState extends PackageState{
 
-    status$ : Observable<PostgreSqlStatus>
     childrenPanels$ = new BehaviorSubject([PanelId.PostgreSqlGeneral])
         
     constructor(
-        public readonly pack: Package, 
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
         ){
-        this.status$ = Backend.postgreSql.watch(pack.namespace)
-    }
-
-    subscribe() : Array<Subscription> {
-        return []
+            super(pack, selectedPanel$, Backend.postgreSql)
     }
 }
 

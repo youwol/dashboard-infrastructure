@@ -10,9 +10,7 @@ import { ExplorerView } from './explorer.view'
 import { HelmTabView } from '../helm/helm.view'
 
 
-export class MinioState  implements PackageState {
-
-    status$ : Observable<MinioStatus>
+export class MinioState  extends PackageState {
 
     childrenPanels$ = new BehaviorSubject([
         PanelId.MinioGeneral, 
@@ -20,15 +18,10 @@ export class MinioState  implements PackageState {
     ])
 
     constructor(
-        public readonly pack: Package, 
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
         ){
-
-        this.status$ = Backend.minio.watch(pack.namespace)
-    }
-
-    subscribe(): Array<Subscription> {
-        return []
+            super(pack, selectedPanel$, Backend.minio)
     }
 }
 

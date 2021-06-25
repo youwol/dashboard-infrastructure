@@ -15,20 +15,15 @@ let titles = {
     [PanelId.KongAdmin] :'Kong admin'
 }
 
-export class KongState implements PackageState {
+export class KongState extends PackageState {
 
-    status$ : Observable<KongStatus>
     childrenPanels$ = new BehaviorSubject([PanelId.KongGeneral, PanelId.KongAdmin])
     
     constructor(
-        public readonly pack: Package,
-        public readonly selectedPanel$: BehaviorSubject<PanelId>
+        pack: Package,
+        selectedPanel$: BehaviorSubject<PanelId>
         ){
-            this.status$ = Backend.kong.watch(pack.namespace)
-    }
-
-    subscribe() : Array<Subscription> {
-        return []
+            super(pack, selectedPanel$, Backend.kong)
     }
 }
 
