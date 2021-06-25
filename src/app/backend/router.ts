@@ -13,6 +13,7 @@ import { RedisRouter } from "../redis/redis.router";
 import { mergeMap, take } from "rxjs/operators";
 import { instanceOfDeploymentStatus } from "../models";
 import { CDNRouter } from "../cdn/cdn.router";
+import { KeycloakRouter } from "../keycloak/keycloak.router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -59,7 +60,8 @@ export class Backend {
         DocDbRouter.headers=headers,
         StorageRouter.headers=headers,
         RedisRouter.headers=headers,
-        CDNRouter.headers=headers
+        CDNRouter.headers=headers,
+        KeycloakRouter.headers=headers
     }
 
     private static webSocket$ : ReplaySubject<any>
@@ -77,6 +79,7 @@ export class Backend {
     static storage = StorageRouter
     static redis = RedisRouter
     static cdn = CDNRouter
+    static keycloak = KeycloakRouter
 
     static connectWs(): Promise<any>{
 

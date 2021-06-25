@@ -16,7 +16,8 @@ export enum PanelId{
     DocDbGeneral = "docdb.general",
     StorageGeneral = "storage.general",
     RedisGeneral = "redis.general",
-    CDNGeneral = "cdn.general"
+    CDNGeneral = "cdn.general",
+    KeycloakGeneral = "keycloak.general"
 }
 
 export let tabsDisplayInfo = {
@@ -33,5 +34,6 @@ export let tabsDisplayInfo = {
     [PanelId.StorageGeneral]: { title: "General", enabled: true},
     [PanelId.RedisGeneral]: { title: "General", enabled: true},
     [PanelId.CDNGeneral]: { title: "General", enabled: true},
+    [PanelId.KeycloakGeneral]: { title: "General", enabled: true},
 }
 

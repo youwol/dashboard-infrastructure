@@ -5,6 +5,7 @@ import { CDNState, CDNView } from "./cdn/cdn.view"
 import { DocDbState, DocDbView } from "./docdb/docdb.view"
 import { Package } from "./environment/models"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
+import { KeycloakState, KeycloakView } from "./keycloak/keycloak.view"
 import { KongState, KongView } from "./kong/kong.view"
 import { MinioState, MinioView } from "./minio/minio.view"
 import { PackageState } from "./models"
@@ -28,7 +29,8 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     redis: new PackageFactory(RedisState, RedisView),
     docdb: new PackageFactory(DocDbState, DocDbView),
     storage: new PackageFactory(StorageState,StorageView),
-    'cdn-backend': new PackageFactory(CDNState,CDNView)
+    'cdn-backend': new PackageFactory(CDNState,CDNView),
+    auth: new PackageFactory(KeycloakState,KeycloakView)
 }
 
 
