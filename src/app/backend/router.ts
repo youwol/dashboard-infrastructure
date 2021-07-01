@@ -15,6 +15,7 @@ import { instanceOfDeploymentStatus } from "../models";
 import { CDNRouter } from "../cdn/cdn.router";
 import { KeycloakRouter } from "../keycloak/keycloak.router";
 import { FluxBackendRouter } from "../flux-backend/router";
+import { FrontApiRouter } from "../front-api/router";
 import { FluxBuilderRouter } from "../flux-builder/router";
 import { FluxRunnerRouter } from "../flux-runner/router";
 
@@ -68,6 +69,7 @@ export class Backend {
         AssetsBackendRouter.headers=headers,
         FluxBackendRouter.headers=headers,
         AssetsGatewayRouter.headers=headers,
+        FrontApiRouter.headers=headers,
         FluxBuilderRouter.headers=headers,
         FluxRunnerRouter.headers=headers
     }
@@ -91,6 +93,7 @@ export class Backend {
     static assetsBackend = AssetsBackendRouter
     static assetsGateway = AssetsGatewayRouter
     static fluxBackend = FluxBackendRouter
+    static frontApi = FrontApiRouter
     static fluxBuilder = FluxBuilderRouter
     static fluxRunner = FluxRunnerRouter
 
