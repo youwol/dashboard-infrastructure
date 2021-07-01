@@ -7,6 +7,7 @@ import { CDNState, CDNView } from "./cdn/cdn.view"
 import { DocDbState, DocDbView } from "./docdb/docdb.view"
 import { Package } from "./environment/models"
 import { FluxBackendState, FluxBackendView } from "./flux-backend/view"
+import { FluxBuilderState, FluxBuilderView } from "./flux-builder/view"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
 import { KeycloakState, KeycloakView } from "./keycloak/keycloak.view"
 import { KongState, KongView } from "./kong/kong.view"
@@ -37,6 +38,7 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     'assets-backend': new PackageFactory(AssetsBackendState, AssetsBackendView),
     'assets-gateway': new PackageFactory(AssetsGatewayState, AssetsGatewayView),
     'flux-backend': new PackageFactory(FluxBackendState, FluxBackendView),
+    'flux-builder': new PackageFactory(FluxBuilderState,FluxBuilderView),
 }
 
 

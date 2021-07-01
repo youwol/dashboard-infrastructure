@@ -22,6 +22,7 @@ export enum PanelId{
     AssetsBackendGeneral = "assets-backend.general",
     AssetsGatewayGeneral = "assets-gateway.general",
     FluxBackendGeneral = "flux-backend.general",
+    FluxBuilderGeneral = "flux-builder.general",
 }
 
 export let tabsDisplayInfo = {
@@ -42,5 +43,6 @@ export let tabsDisplayInfo = {
     [PanelId.KeycloakGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsBackendGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsGatewayGeneral]: { title: "General", enabled: true},
+    [PanelId.FluxBuilderGeneral]: { title: "General", enabled: true},
 }
 
