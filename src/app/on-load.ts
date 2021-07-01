@@ -24,7 +24,8 @@ let vDOM = {
     children: [
         sideBar,
         {
-            class: 'd-flex flex-column w-100',
+            class: 'd-flex flex-column flex-grow-1',
+            style:{'min-width':'0%'},
             children:[
                 clusterView,
                 child$( 
