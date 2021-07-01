@@ -14,6 +14,7 @@ import { mergeMap, take } from "rxjs/operators";
 import { instanceOfDeploymentStatus } from "../models";
 import { CDNRouter } from "../cdn/cdn.router";
 import { KeycloakRouter } from "../keycloak/keycloak.router";
+import { TreeDbBackendRouter } from "../treedb-backend/router";
 import { FluxBackendRouter } from "../flux-backend/router";
 import { FrontApiRouter } from "../front-api/router";
 import { FluxBuilderRouter } from "../flux-builder/router";
@@ -66,6 +67,7 @@ export class Backend {
         RedisRouter.headers=headers,
         CDNRouter.headers=headers,
         KeycloakRouter.headers=headers
+        TreeDbBackendRouter.headers=headers,
         AssetsBackendRouter.headers=headers,
         FluxBackendRouter.headers=headers,
         AssetsGatewayRouter.headers=headers,
@@ -90,6 +92,7 @@ export class Backend {
     static redis = RedisRouter
     static cdn = CDNRouter
     static keycloak = KeycloakRouter
+    static treedb = TreeDbBackendRouter
     static assetsBackend = AssetsBackendRouter
     static assetsGateway = AssetsGatewayRouter
     static fluxBackend = FluxBackendRouter

@@ -19,6 +19,7 @@ export enum PanelId{
     RedisGeneral = "redis.general",
     CDNGeneral = "cdn.general",
     KeycloakGeneral = "keycloak.general"
+    TreeDbBackendGeneral = "treedb.general",
     AssetsBackendGeneral = "assets-backend.general",
     AssetsGatewayGeneral = "assets-gateway.general",
     FluxBackendGeneral = "flux-backend.general",
@@ -43,6 +44,7 @@ export let tabsDisplayInfo = {
     [PanelId.RedisGeneral]: { title: "General", enabled: true},
     [PanelId.CDNGeneral]: { title: "General", enabled: true},
     [PanelId.KeycloakGeneral]: { title: "General", enabled: true},
+    [PanelId.TreeDbBackendGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsBackendGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsGatewayGeneral]: { title: "General", enabled: true},
     [PanelId.FrontApiGeneral]: { title: "General", enabled: true},

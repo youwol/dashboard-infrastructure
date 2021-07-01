@@ -20,6 +20,7 @@ import { PostgreSqlState, PostgreSqlView } from "./postgre-sql/postgre-sql.view"
 import { RedisState, RedisView } from "./redis/redis.view"
 import { ScyllaState, ScyllaView } from "./scylla/scylla.view"
 import { StorageState, StorageView } from "./storage/storage.view"
+import { TreeDbBackendState, TreeDbBackendView } from "./treedb-backend/view"
 
 class PackageFactory<TState, TView>{
 
@@ -37,6 +38,7 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     storage: new PackageFactory(StorageState,StorageView),
     'cdn-backend': new PackageFactory(CDNState,CDNView),
     auth: new PackageFactory(KeycloakState,KeycloakView)
+    'treedb-backend': new PackageFactory(TreeDbBackendState, TreeDbBackendView),
     'assets-backend': new PackageFactory(AssetsBackendState, AssetsBackendView),
     'assets-gateway': new PackageFactory(AssetsGatewayState, AssetsGatewayView),
     'flux-backend': new PackageFactory(FluxBackendState, FluxBackendView),
