@@ -16,6 +16,7 @@ import { CDNRouter } from "../cdn/cdn.router";
 import { KeycloakRouter } from "../keycloak/keycloak.router";
 import { FluxBackendRouter } from "../flux-backend/router";
 import { FluxBuilderRouter } from "../flux-builder/router";
+import { FluxRunnerRouter } from "../flux-runner/router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -68,6 +69,7 @@ export class Backend {
         FluxBackendRouter.headers=headers,
         AssetsGatewayRouter.headers=headers,
         FluxBuilderRouter.headers=headers,
+        FluxRunnerRouter.headers=headers
     }
 
     private static webSocket$ : ReplaySubject<any>
@@ -90,6 +92,7 @@ export class Backend {
     static assetsGateway = AssetsGatewayRouter
     static fluxBackend = FluxBackendRouter
     static fluxBuilder = FluxBuilderRouter
+    static fluxRunner = FluxRunnerRouter
 
     static connectWs(): Promise<any>{
 
