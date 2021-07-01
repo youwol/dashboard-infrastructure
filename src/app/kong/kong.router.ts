@@ -66,6 +66,13 @@ export class KongRouter{
         fetch(r).then()
     }
 
+    static triggerUpgrade(namespace: string, body ){
+
+        let r = new Request( `${KongRouter.urlBase}/${namespace}/upgrade`, 
+        { method: 'POST', body: JSON.stringify(body), headers: KongRouter.headers })
+        fetch(r).then()
+    }
+
     static kongAdminInfo$(namespace: string){
         
         let url = `${KongRouter.urlBase}/${namespace}/kong-admin/info`
