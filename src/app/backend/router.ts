@@ -17,6 +17,7 @@ import { KeycloakRouter } from "../keycloak/keycloak.router";
 import { TreeDbBackendRouter } from "../treedb-backend/router";
 import { FluxBackendRouter } from "../flux-backend/router";
 import { FrontApiRouter } from "../front-api/router";
+import { WorkspaceExplorerRouter } from "../workspace-explorer/router";
 import { FluxBuilderRouter } from "../flux-builder/router";
 import { FluxRunnerRouter } from "../flux-runner/router";
 
@@ -72,6 +73,7 @@ export class Backend {
         FluxBackendRouter.headers=headers,
         AssetsGatewayRouter.headers=headers,
         FrontApiRouter.headers=headers,
+        WorkspaceExplorerRouter.headers=headers,
         FluxBuilderRouter.headers=headers,
         FluxRunnerRouter.headers=headers
     }
@@ -97,6 +99,7 @@ export class Backend {
     static assetsGateway = AssetsGatewayRouter
     static fluxBackend = FluxBackendRouter
     static frontApi = FrontApiRouter
+    static workspaceExplorer = WorkspaceExplorerRouter
     static fluxBuilder = FluxBuilderRouter
     static fluxRunner = FluxRunnerRouter
 

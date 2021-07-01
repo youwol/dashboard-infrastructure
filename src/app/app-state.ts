@@ -21,6 +21,7 @@ import { RedisState, RedisView } from "./redis/redis.view"
 import { ScyllaState, ScyllaView } from "./scylla/scylla.view"
 import { StorageState, StorageView } from "./storage/storage.view"
 import { TreeDbBackendState, TreeDbBackendView } from "./treedb-backend/view"
+import { WorkspaceExplorerState, WorkspaceExplorerView } from "./workspace-explorer/view"
 
 class PackageFactory<TState, TView>{
 
@@ -43,6 +44,7 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     'assets-gateway': new PackageFactory(AssetsGatewayState, AssetsGatewayView),
     'flux-backend': new PackageFactory(FluxBackendState, FluxBackendView),
     'front-api': new PackageFactory(FrontApiState,FrontApiView),
+    'workspace-explorer': new PackageFactory(WorkspaceExplorerState,WorkspaceExplorerView),
     'flux-builder': new PackageFactory(FluxBuilderState,FluxBuilderView),
     'flux-runner': new PackageFactory(FluxRunnerState,FluxRunnerView)
 }

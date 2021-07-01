@@ -24,6 +24,7 @@ export enum PanelId{
     AssetsGatewayGeneral = "assets-gateway.general",
     FluxBackendGeneral = "flux-backend.general",
     FrontApiGeneral = "front-api.general",
+    WorkspaceExplorerGeneral = "workspace-explorer.general",
     FluxBuilderGeneral = "flux-builder.general",
     FluxRunnerGeneral = "flux-runner.general",
 }
@@ -48,6 +49,7 @@ export let tabsDisplayInfo = {
     [PanelId.AssetsBackendGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsGatewayGeneral]: { title: "General", enabled: true},
     [PanelId.FrontApiGeneral]: { title: "General", enabled: true},
+    [PanelId.WorkspaceExplorerGeneral]: { title: "General", enabled: true},
     [PanelId.FluxBuilderGeneral]: { title: "General", enabled: true},
     [PanelId.FluxRunnerGeneral]: { title: "General", enabled: true},
 }
