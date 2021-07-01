@@ -1,5 +1,6 @@
 
 import { BehaviorSubject, Subject } from "rxjs"
+import { AssetsBackendState, AssetsBackendView } from "./assets-backend/view"
 import { Backend } from "./backend/router"
 import { CDNState, CDNView } from "./cdn/cdn.view"
 import { DocDbState, DocDbView } from "./docdb/docdb.view"
@@ -31,6 +32,7 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     storage: new PackageFactory(StorageState,StorageView),
     'cdn-backend': new PackageFactory(CDNState,CDNView),
     auth: new PackageFactory(KeycloakState,KeycloakView)
+    'assets-backend': new PackageFactory(AssetsBackendState, AssetsBackendView),
 }
 
 
