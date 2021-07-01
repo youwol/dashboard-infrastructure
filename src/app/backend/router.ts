@@ -63,6 +63,7 @@ export class Backend {
         CDNRouter.headers=headers,
         KeycloakRouter.headers=headers
         AssetsBackendRouter.headers=headers,
+        AssetsGatewayRouter.headers=headers,
     }
 
     private static webSocket$ : ReplaySubject<any>
@@ -82,6 +83,7 @@ export class Backend {
     static cdn = CDNRouter
     static keycloak = KeycloakRouter
     static assetsBackend = AssetsBackendRouter
+    static assetsGateway = AssetsGatewayRouter
 
     static connectWs(): Promise<any>{
 

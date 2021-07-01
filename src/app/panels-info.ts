@@ -20,6 +20,7 @@ export enum PanelId{
     CDNGeneral = "cdn.general",
     KeycloakGeneral = "keycloak.general"
     AssetsBackendGeneral = "assets-backend.general",
+    AssetsGatewayGeneral = "assets-gateway.general",
 }
 
 export let tabsDisplayInfo = {
@@ -39,5 +40,6 @@ export let tabsDisplayInfo = {
     [PanelId.CDNGeneral]: { title: "General", enabled: true},
     [PanelId.KeycloakGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsBackendGeneral]: { title: "General", enabled: true},
+    [PanelId.AssetsGatewayGeneral]: { title: "General", enabled: true},
 }
 
