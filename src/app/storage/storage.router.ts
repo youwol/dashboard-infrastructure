@@ -36,4 +36,11 @@ export class StorageRouter{
         { method: 'POST', body: JSON.stringify(body), headers: StorageRouter.headers })
         fetch(r).then()
     }
+
+    static triggerUpgrade(namespace: string, body ){
+
+        let r = new Request( `${StorageRouter.urlBase}/${namespace}/upgrade`, 
+        { method: 'POST', body: JSON.stringify(body), headers: StorageRouter.headers })
+        fetch(r).then()
+    }
 }
