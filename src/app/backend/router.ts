@@ -14,6 +14,7 @@ import { mergeMap, take } from "rxjs/operators";
 import { instanceOfDeploymentStatus } from "../models";
 import { CDNRouter } from "../cdn/cdn.router";
 import { KeycloakRouter } from "../keycloak/keycloak.router";
+import { FluxBackendRouter } from "../flux-backend/router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -63,6 +64,7 @@ export class Backend {
         CDNRouter.headers=headers,
         KeycloakRouter.headers=headers
         AssetsBackendRouter.headers=headers,
+        FluxBackendRouter.headers=headers,
         AssetsGatewayRouter.headers=headers,
     }
 
@@ -84,6 +86,7 @@ export class Backend {
     static keycloak = KeycloakRouter
     static assetsBackend = AssetsBackendRouter
     static assetsGateway = AssetsGatewayRouter
+    static fluxBackend = FluxBackendRouter
 
     static connectWs(): Promise<any>{
 

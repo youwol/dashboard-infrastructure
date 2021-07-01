@@ -21,6 +21,7 @@ export enum PanelId{
     KeycloakGeneral = "keycloak.general"
     AssetsBackendGeneral = "assets-backend.general",
     AssetsGatewayGeneral = "assets-gateway.general",
+    FluxBackendGeneral = "flux-backend.general",
 }
 
 export let tabsDisplayInfo = {
