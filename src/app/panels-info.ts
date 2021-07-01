@@ -19,7 +19,7 @@ export enum PanelId{
     StorageGeneral = "storage.general",
     RedisGeneral = "redis.general",
     CDNGeneral = "cdn.general",
-    KeycloakGeneral = "keycloak.general"
+    KeycloakGeneral = "keycloak.general",
     TreeDbBackendGeneral = "treedb.general",
     AssetsBackendGeneral = "assets-backend.general",
     AssetsGatewayGeneral = "assets-gateway.general",

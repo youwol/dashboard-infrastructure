@@ -38,11 +38,11 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     docdb: new PackageFactory(DocDbState, DocDbView),
     storage: new PackageFactory(StorageState,StorageView),
     'cdn-backend': new PackageFactory(CDNState,CDNView),
-    auth: new PackageFactory(KeycloakState,KeycloakView)
     'treedb-backend': new PackageFactory(TreeDbBackendState, TreeDbBackendView),
     'assets-backend': new PackageFactory(AssetsBackendState, AssetsBackendView),
     'assets-gateway': new PackageFactory(AssetsGatewayState, AssetsGatewayView),
     'flux-backend': new PackageFactory(FluxBackendState, FluxBackendView),
+    auth: new PackageFactory(KeycloakState,KeycloakView),
     'front-api': new PackageFactory(FrontApiState,FrontApiView),
     'workspace-explorer': new PackageFactory(WorkspaceExplorerState,WorkspaceExplorerView),
     'flux-builder': new PackageFactory(FluxBuilderState,FluxBuilderView),

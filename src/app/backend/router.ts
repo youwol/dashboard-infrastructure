@@ -67,9 +67,9 @@ export class Backend {
         StorageRouter.headers=headers,
         RedisRouter.headers=headers,
         CDNRouter.headers=headers,
-        KeycloakRouter.headers=headers
         TreeDbBackendRouter.headers=headers,
         AssetsBackendRouter.headers=headers,
+        KeycloakRouter.headers=headers,
         FluxBackendRouter.headers=headers,
         AssetsGatewayRouter.headers=headers,
         FrontApiRouter.headers=headers,
