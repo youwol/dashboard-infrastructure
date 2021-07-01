@@ -50,6 +50,7 @@ export let tabsDisplayInfo = {
     [PanelId.TreeDbBackendGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsBackendGeneral]: { title: "General", enabled: true},
     [PanelId.AssetsGatewayGeneral]: { title: "General", enabled: true},
+    [PanelId.FluxBackendGeneral]: { title: "General", enabled: true},
     [PanelId.FrontApiGeneral]: { title: "General", enabled: true},
     [PanelId.WorkspaceExplorerGeneral]: { title: "General", enabled: true},
     [PanelId.FluxBuilderGeneral]: { title: "General", enabled: true},
