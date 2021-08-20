@@ -9,6 +9,7 @@ import { Package } from "./environment/models"
 import { FluxBackendState, FluxBackendView } from "./flux-backend/view"
 import { FluxBuilderState, FluxBuilderView } from "./flux-builder/view"
 import { FluxRunnerState, FluxRunnerView } from "./flux-runner/view"
+import { NetworkState, NetworkView } from "./network/view"
 import { FrontApiState, FrontApiView } from "./front-api/view"
 import { K8sDashboardState, K8sDashboardView } from "./k8s-dashboard/k8s-dashboard.view"
 import { KeycloakState, KeycloakView } from "./keycloak/keycloak.view"
@@ -46,7 +47,8 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     'front-api': new PackageFactory(FrontApiState,FrontApiView),
     'workspace-explorer': new PackageFactory(WorkspaceExplorerState,WorkspaceExplorerView),
     'flux-builder': new PackageFactory(FluxBuilderState,FluxBuilderView),
-    'flux-runner': new PackageFactory(FluxRunnerState,FluxRunnerView)
+    'flux-runner': new PackageFactory(FluxRunnerState,FluxRunnerView),
+    'network': new PackageFactory(NetworkState, NetworkView)
 }
 
 

@@ -22,6 +22,7 @@ import { FrontApiRouter } from "../front-api/router";
 import { WorkspaceExplorerRouter } from "../workspace-explorer/router";
 import { FluxBuilderRouter } from "../flux-builder/router";
 import { FluxRunnerRouter } from "../flux-runner/router";
+import { NetworkRouter } from "../network/router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -77,7 +78,8 @@ export class Backend {
         FrontApiRouter.headers=headers,
         WorkspaceExplorerRouter.headers=headers,
         FluxBuilderRouter.headers=headers,
-        FluxRunnerRouter.headers=headers
+        FluxRunnerRouter.headers=headers,
+        NetworkRouter.headers=headers
     }
 
     private static webSocket$ : ReplaySubject<any>
@@ -104,6 +106,7 @@ export class Backend {
     static workspaceExplorer = WorkspaceExplorerRouter
     static fluxBuilder = FluxBuilderRouter
     static fluxRunner = FluxRunnerRouter
+    static network = NetworkRouter
 
     static connectWs(): Promise<any>{
 
