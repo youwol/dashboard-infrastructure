@@ -3,7 +3,7 @@ import { SanityEnum } from "../models"
 import { Backend } from "../backend/router"
 
 
-export interface Status{
+export interface Status {
 
     installed: boolean
     sanity: SanityEnum
@@ -11,25 +11,25 @@ export interface Status{
 }
 
 
-export class CDNRouter{
+export class CDNRouter {
 
     private static urlBase = '/api/youwol-infra/cdn'
 
-    public static webSocket$ : ReplaySubject<any> 
-    public static statusDict$ : {[key:string]: ReplaySubject<Status>} = {}
-    
+    public static webSocket$: ReplaySubject<any>
+    public static statusDict$: { [key: string]: ReplaySubject<Status> } = {}
+
     static headers = {}
 
-    static triggerStatus(namespace: string){
+    static triggerStatus(namespace: string) {
 
-        let r = new Request( `${CDNRouter.urlBase}/${namespace}/status`, { headers: CDNRouter.headers })
+        let r = new Request(`${CDNRouter.urlBase}/${namespace}/status`, { headers: CDNRouter.headers })
         fetch(r).then()
     }
 
-    static triggerInstall(namespace: string, body ){
+    static triggerInstall(namespace: string, body) {
 
-        let r = new Request( `${CDNRouter.urlBase}/${namespace}/install`, 
-        { method: 'POST', body: JSON.stringify(body), headers: CDNRouter.headers })
+        let r = new Request(`${CDNRouter.urlBase}/${namespace}/install`,
+            { method: 'POST', body: JSON.stringify(body), headers: CDNRouter.headers })
         fetch(r).then()
     }
 }
