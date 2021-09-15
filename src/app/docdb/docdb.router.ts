@@ -1,9 +1,7 @@
-import { Observable, of, ReplaySubject } from "rxjs"
-import { filter, map, mergeMap, take } from "rxjs/operators"
-import { instanceOfDeploymentStatus, SanityEnum } from "../models"
-import { EnvironmentRouter } from "../environment/environment.router"
-import { Backend, createObservableFromFetch } from "../backend/router"
-import { table } from "node:console"
+import { Observable, ReplaySubject } from "rxjs"
+import { map } from "rxjs/operators"
+import { SanityEnum } from "../models"
+import { createObservableFromFetch } from "../backend/router"
 
 
 export interface Status{
