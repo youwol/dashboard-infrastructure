@@ -28,7 +28,8 @@ export enum PanelId{
     WorkspaceExplorerGeneral = "workspace-explorer.general",
     FluxBuilderGeneral = "flux-builder.general",
     FluxRunnerGeneral = "flux-runner.general",
-    NetworkGeneral = "network.general"
+    NetworkGeneral = "network.general",
+    NetworkBackendGeneral = "network-backend.general",
 }
 
 export let tabsDisplayInfo = {
@@ -57,5 +58,6 @@ export let tabsDisplayInfo = {
     [PanelId.FluxBuilderGeneral]: { title: "General", enabled: true},
     [PanelId.FluxRunnerGeneral]: { title: "General", enabled: true},
     [PanelId.NetworkGeneral]: { title: "General", enabled: true},
+    [PanelId.NetworkBackendGeneral]: { title: "General", enabled: true}
 }
 

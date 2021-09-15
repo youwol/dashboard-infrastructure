@@ -23,6 +23,7 @@ import { ScyllaState, ScyllaView } from "./scylla/scylla.view"
 import { StorageState, StorageView } from "./storage/storage.view"
 import { TreeDbBackendState, TreeDbBackendView } from "./treedb-backend/view"
 import { WorkspaceExplorerState, WorkspaceExplorerView } from "./workspace-explorer/view"
+import { NetworkBackendState, NetworkBackendView } from "./network-backend/view"
 
 class PackageFactory<TState, TView>{
 
@@ -48,7 +49,8 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     'workspace-explorer': new PackageFactory(WorkspaceExplorerState,WorkspaceExplorerView),
     'flux-builder': new PackageFactory(FluxBuilderState,FluxBuilderView),
     'flux-runner': new PackageFactory(FluxRunnerState,FluxRunnerView),
-    'network': new PackageFactory(NetworkState, NetworkView)
+    'network': new PackageFactory(NetworkState, NetworkView),
+    'network-backend': new PackageFactory(NetworkBackendState, NetworkBackendView)
 }
 
 
