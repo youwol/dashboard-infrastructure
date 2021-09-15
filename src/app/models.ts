@@ -37,7 +37,7 @@ export abstract class PackageState{
         public readonly selectedPanel$: BehaviorSubject<PanelId>,
         public readonly Router: any
         ){
-            this.status$ = Backend.channel$(pack.name, pack.namespace)
+            this.status$ = Backend.channel$(pack.name, pack.namespace, "status")
             Router.triggerStatus(pack.namespace)
         }
 

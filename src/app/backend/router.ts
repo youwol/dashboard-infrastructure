@@ -129,8 +129,8 @@ export class Backend {
                 if(d.type == 'log' )
                     Backend.logs$.next(d)
 
-                if(d.package){
-                    let channel$ = Backend.channel$(d.package.name, d.package.namespace)
+                if(d.package && d.topic){
+                    let channel$ = Backend.channel$(d.package.name, d.package.namespace, d.topic)
                     channel$.next(d)
                 }
             };
@@ -147,9 +147,9 @@ export class Backend {
     }
 
 
-    static channel$(name: string, namespace: string) : ReplaySubject<any> {
+    static channel$(name: string, namespace: string, topic: string) : ReplaySubject<any> {
 
-        let packageId = `${namespace}#${name}`
+        let packageId = `${namespace}#${name}@${topic}`
         if(!Backend.messagesByPackages$[packageId]){
             console.log("create channel", packageId)
             Backend.messagesByPackages$[packageId] = new ReplaySubject() 
