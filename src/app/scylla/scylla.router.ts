@@ -60,6 +60,13 @@ export class ScyllaRouter{
         { method: 'POST', body: JSON.stringify(body), headers: ScyllaRouter.headers })
         fetch(r).then()
     }
+    
+    static triggerUpgrade(namespace: string, body ){
+
+        let r = new Request( `${ScyllaRouter.urlBase}/${namespace}/upgrade`, 
+        { method: 'POST', body: JSON.stringify(body), headers: ScyllaRouter.headers })
+        fetch(r).then()
+    }
 
     static getKeyspaces$(namespace: string): Observable<ScyllaKeyspaces>{
         let r = new Request( `${ScyllaRouter.urlBase}/${namespace}/keyspaces`, { headers: ScyllaRouter.headers })
