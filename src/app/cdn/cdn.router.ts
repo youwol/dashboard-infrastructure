@@ -32,4 +32,11 @@ export class CDNRouter {
             { method: 'POST', body: JSON.stringify(body), headers: CDNRouter.headers })
         fetch(r).then()
     }
+
+    static triggerUpgrade(namespace: string, body ){
+
+        let r = new Request( `${CDNRouter.urlBase}/${namespace}/upgrade`, 
+        { method: 'POST', body: JSON.stringify(body), headers: CDNRouter.headers })
+        fetch(r).then()
+    }
 }
