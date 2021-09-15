@@ -8,6 +8,7 @@ import { PackageState } from '../models'
 import { Package } from '../environment/models'
 import { HelmTabView } from '../helm/helm.view'
 import { ExplorerView } from './explorer.view'
+import { InitializationView } from './data-initialization.view'
 
 
 let titles = {
@@ -16,7 +17,7 @@ let titles = {
 
 export class DocDbState extends PackageState{
 
-    childrenPanels$ = new BehaviorSubject([PanelId.DocDbGeneral, PanelId.DocDbExplorer])
+    childrenPanels$ = new BehaviorSubject([PanelId.DocDbGeneral, PanelId.DocDbExplorer, PanelId.DocDbInitialization])
 
     constructor(
         pack: Package,
@@ -47,7 +48,16 @@ class ExplorerTabData extends Tabs.TabData{
     }
 }
 
-
+class InitializationTabData extends Tabs.TabData{
+    
+    constructor(public readonly state: DocDbState){
+        super(PanelId.DocDbInitialization, tabsDisplayInfo[PanelId.DocDbInitialization].title )
+    }
+    
+    view() {
+        return new InitializationView(this.state)
+    }
+}
 
 
 export class DocDbView implements VirtualDOM{
@@ -61,7 +71,8 @@ export class DocDbView implements VirtualDOM{
 
         let tabsData = [
             new GeneralTabData(state),
-            new ExplorerTabData(state)            
+            new ExplorerTabData(state),
+            new InitializationTabData(state)           
         ]
         
         this.children = [

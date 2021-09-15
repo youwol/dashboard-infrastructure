@@ -1,8 +1,9 @@
-import { Observable, ReplaySubject } from "rxjs"
-import { filter, mergeMap, take } from "rxjs/operators"
+import { Observable, of, ReplaySubject } from "rxjs"
+import { filter, map, mergeMap, take } from "rxjs/operators"
 import { instanceOfDeploymentStatus, SanityEnum } from "../models"
 import { EnvironmentRouter } from "../environment/environment.router"
 import { Backend, createObservableFromFetch } from "../backend/router"
+import { table } from "node:console"
 
 
 export interface Status{
@@ -10,6 +11,18 @@ export interface Status{
     installed: boolean
     sanity: SanityEnum
     pending: boolean
+}
+
+export interface LocalTable{
+    name: string
+    keyspace: string
+}
+export function tableId(t:LocalTable){
+    return t.keyspace + "@" + t.name
+}
+
+export interface LocalTablesResponse{
+    tables: Array<LocalTable>
 }
 
 
@@ -57,4 +70,19 @@ export class DocDbRouter{
         { headers: DocDbRouter.headers, method:'POST', body: JSON.stringify(body) })
         return createObservableFromFetch(r) as Observable<any>
     }
+
+    static getLocalDocDbTables(body: any): Observable<LocalTable[]>{
+
+        let r = new Request( `${DocDbRouter.urlBase}/local-tables`, 
+        { headers: DocDbRouter.headers, method:'POST', body: JSON.stringify(body) })
+        return createObservableFromFetch(r).pipe(
+            map( (tableResponse: LocalTablesResponse) => tableResponse.tables)
+        )
+    }
+    static synchronizeLocalTables(namespace: string, body){
+        let r = new Request( `${DocDbRouter.urlBase}/${namespace}/sync-local-tables`, 
+        { headers: DocDbRouter.headers, method:'POST', body: JSON.stringify(body) })
+        return createObservableFromFetch(r).subscribe()
+    }
+    
 }
