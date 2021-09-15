@@ -9,13 +9,13 @@ import { Backend } from "../backend/router"
 
 class State{
 
-    syncId = String(Math.floor(Math.random() * 1e6))
+    public readonly  syncId = String(Math.floor(Math.random() * 1e6))
 
-    currentFolder$ = new BehaviorSubject<string>("")
+    public readonly currentFolder$ = new BehaviorSubject<string>("")
 
-    toggledTables$ = new BehaviorSubject<LocalTable[]>([])
+    public readonly toggledTables$ = new BehaviorSubject<LocalTable[]>([])
 
-    progressEvent$ : Observable<{progress:number, operationId:string}>
+    public readonly progressEvent$ : Observable<{progress:number, operationId:string}>
     
 
     constructor(public readonly pack: Package){
@@ -41,6 +41,7 @@ class State{
     toggleAll(tables){
         this.toggledTables$.next(tables)
     }
+
     unToggleAll(){
         this.toggledTables$.next([])
     }
@@ -61,10 +62,10 @@ export class InitializationView implements VirtualDOM {
     public readonly children: Array<VirtualDOM>
     public readonly class = innerTabClasses
 
-    validateFolderBtn = button("fas fa-check", "Ok")
-    syncBtn = button("fas fa-lightning", "Sync")
+    private readonly validateFolderBtn = button("fas fa-check", "Ok")
+    private readonly syncBtn = button("fas fa-lightning", "Sync")
 
-    state : State 
+    private readonly state : State 
 
     connectedCallback: (d: HTMLElement$) => void
     
@@ -115,7 +116,7 @@ export class InitializationView implements VirtualDOM {
         }
     }
 
-    tablesListView( tables : LocalTable[]){
+    tablesListView( tables : LocalTable[]): VirtualDOM{
         
         let checkBox = (table:LocalTable) => ({
             tag:'input',
@@ -173,7 +174,7 @@ export class InitializationView implements VirtualDOM {
         }
     }
 
-    progressView(progress): VirtualDOM {
+    progressView(progress: number): VirtualDOM {
 
         return {
             class:"w-100 my-3",
