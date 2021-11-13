@@ -28,28 +28,28 @@ import { StoriesBackendRouter } from "../stories-backend/router";
 import { StoriesRouter } from "../stories/router";
 import { ExhibitionHallsRouter } from "../exhibition-halls/router";
 
-export function createObservableFromFetch( request, extractFct = (d) =>d ){
+export function createObservableFromFetch(request, extractFct = (d) => d) {
 
     return new Observable(observer => {
         fetch(request)
-          .then(response => response.json()) // or text() or blob() etc.
-          .then(data => {
-            observer.next( extractFct(data));
-            observer.complete();
-          })
-          .catch(err => observer.error(err)); 
+            .then(response => response.json()) // or text() or blob() etc.
+            .then(data => {
+                observer.next(extractFct(data));
+                observer.complete();
+            })
+            .catch(err => observer.error(err));
     });
 }
-export function createTextObservableFromFetch( request, extractFct = (d) =>d ){
+export function createTextObservableFromFetch(request, extractFct = (d) => d) {
 
     return new Observable(observer => {
         fetch(request)
-          .then(response => response.text()) // or text() or blob() etc.
-          .then(data => {
-            observer.next( extractFct(data));
-            observer.complete();
-          })
-          .catch(err => observer.error(err)); 
+            .then(response => response.text()) // or text() or blob() etc.
+            .then(data => {
+                observer.next(extractFct(data));
+                observer.complete();
+            })
+            .catch(err => observer.error(err));
     });
 }
 
@@ -59,39 +59,39 @@ export class Backend {
 
     static urlBase = '/api/infra-backend'
 
-    static headers : {[key:string]: string}= {}
+    static headers: { [key: string]: string } = {}
 
-    static setHeaders(headers: {[key:string]:string}){
-        Backend.headers=headers
-        EnvironmentRouter.headers=headers
-        LogsRouter.headers=headers,
-        K8sDashboardRouter.headers=headers,
-        PostgreSqlRouter.headers=headers,
-        KongRouter.headers=headers,
-        MinioRouter.headers=headers,
-        ScyllaRouter.headers=headers,
-        DocDbRouter.headers=headers,
-        StorageRouter.headers=headers,
-        RedisRouter.headers=headers,
-        CDNRouter.headers=headers,
-        TreeDbBackendRouter.headers=headers,
-        AssetsBackendRouter.headers=headers,
-        KeycloakRouter.headers=headers,
-        FluxBackendRouter.headers=headers,
-        AssetsGatewayRouter.headers=headers,
-        FrontApiRouter.headers=headers,
-        WorkspaceExplorerRouter.headers=headers,
-        FluxBuilderRouter.headers=headers,
-        FluxRunnerRouter.headers=headers,
-        NetworkRouter.headers=headers,
-        NetworkBackendRouter.headers=headers
+    static setHeaders(headers: { [key: string]: string }) {
+        Backend.headers = headers
+        EnvironmentRouter.headers = headers
+        LogsRouter.headers = headers
+        K8sDashboardRouter.headers = headers
+        PostgreSqlRouter.headers = headers
+        KongRouter.headers = headers
+        MinioRouter.headers = headers
+        ScyllaRouter.headers = headers
+        DocDbRouter.headers = headers
+        StorageRouter.headers = headers
+        RedisRouter.headers = headers
+        CDNRouter.headers = headers
+        TreeDbBackendRouter.headers = headers
+        AssetsBackendRouter.headers = headers
+        KeycloakRouter.headers = headers
+        FluxBackendRouter.headers = headers
+        AssetsGatewayRouter.headers = headers
+        FrontApiRouter.headers = headers
+        WorkspaceExplorerRouter.headers = headers
+        FluxBuilderRouter.headers = headers
+        FluxRunnerRouter.headers = headers
+        NetworkRouter.headers = headers
+        NetworkBackendRouter.headers = headers
         StoriesRouter.headers = headers
         StoriesBackendRouter.headers = headers
         ExhibitionHallsRouter.headers = headers
     }
 
-    private static webSocket$ : ReplaySubject<any>
-    private static messagesByPackages$ : {[key:string]: ReplaySubject<any>} = {}
+    private static webSocket$: ReplaySubject<any>
+    private static messagesByPackages$: { [key: string]: ReplaySubject<any> } = {}
     private static logs$ = new ReplaySubject()
 
     static environment = EnvironmentRouter
@@ -118,26 +118,27 @@ export class Backend {
     static networkBackend = NetworkBackendRouter
     static stories = StoriesRouter
     static storiesBackend = StoriesBackendRouter
+    static exhibitionHalls = ExhibitionHallsRouter
 
-    static connectWs(): Promise<any>{
+    static connectWs(): Promise<any> {
 
-        let promise = new Promise( (resolve, reject) => {
+        let promise = new Promise((resolve, reject) => {
 
-            if(Backend.webSocket$){
-                resolve(Backend.webSocket$) 
-                return 
+            if (Backend.webSocket$) {
+                resolve(Backend.webSocket$)
+                return
             }
             Backend.webSocket$ = new ReplaySubject()
             let socket_url = `ws://localhost:2260/ws`
             var ws = new WebSocket(socket_url);
-            
+
             ws.onmessage = (event) => {
                 let d = JSON.parse(event.data)
                 Backend.webSocket$.next(d)
-                if(d.type == 'log' )
+                if (d.type == 'log')
                     Backend.logs$.next(d)
 
-                if(d.package && d.topic){
+                if (d.package && d.topic) {
                     let channel$ = Backend.channel$(d.package.name, d.package.namespace, d.topic)
                     channel$.next(d)
                 }
@@ -146,21 +147,21 @@ export class Backend {
                 take(1)
             ).subscribe(
                 () => {
-                    resolve(Backend.webSocket$) 
+                    resolve(Backend.webSocket$)
                 }
             )
             //return resolve(Backend.webSocket$)
         })
-        return promise        
+        return promise
     }
 
 
-    static channel$(name: string, namespace: string, topic: string) : ReplaySubject<any> {
+    static channel$(name: string, namespace: string, topic: string): ReplaySubject<any> {
 
         let packageId = `${namespace}#${name}@${topic}`
-        if(!Backend.messagesByPackages$[packageId]){
+        if (!Backend.messagesByPackages$[packageId]) {
             console.log("create channel", packageId)
-            Backend.messagesByPackages$[packageId] = new ReplaySubject() 
+            Backend.messagesByPackages$[packageId] = new ReplaySubject()
         }
 
         return Backend.messagesByPackages$[packageId]
