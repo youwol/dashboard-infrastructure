@@ -24,6 +24,8 @@ import { FluxBuilderRouter } from "../flux-builder/router";
 import { FluxRunnerRouter } from "../flux-runner/router";
 import { NetworkRouter } from "../network/router";
 import { NetworkBackendRouter } from "../network-backend/router";
+import { StoriesBackendRouter } from "../stories-backend/router";
+import { StoriesRouter } from "../stories/router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -82,6 +84,8 @@ export class Backend {
         FluxRunnerRouter.headers=headers,
         NetworkRouter.headers=headers,
         NetworkBackendRouter.headers=headers
+        StoriesRouter.headers = headers
+        StoriesBackendRouter.headers = headers
     }
 
     private static webSocket$ : ReplaySubject<any>
@@ -110,6 +114,8 @@ export class Backend {
     static fluxRunner = FluxRunnerRouter
     static network = NetworkRouter
     static networkBackend = NetworkBackendRouter
+    static stories = StoriesRouter
+    static storiesBackend = StoriesBackendRouter
 
     static connectWs(): Promise<any>{
 

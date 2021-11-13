@@ -61,5 +61,7 @@ export let tabsDisplayInfo = {
     [PanelId.FluxRunnerGeneral]: { title: "General", enabled: true},
     [PanelId.NetworkGeneral]: { title: "General", enabled: true},
     [PanelId.NetworkBackendGeneral]: { title: "General", enabled: true}
+    [PanelId.StoriesGeneral]: { title: "General", enabled: true },
+    [PanelId.StoriesBackendGeneral]: { title: "General", enabled: true },
 }
 

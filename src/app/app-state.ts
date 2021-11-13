@@ -24,6 +24,8 @@ import { StorageState, StorageView } from "./storage/storage.view"
 import { TreeDbBackendState, TreeDbBackendView } from "./treedb-backend/view"
 import { WorkspaceExplorerState, WorkspaceExplorerView } from "./workspace-explorer/view"
 import { NetworkBackendState, NetworkBackendView } from "./network-backend/view"
+import { StoriesBackendState, StoriesBackendView } from "./stories-backend/view"
+import { StoriesState, StoriesView } from "./stories/view"
 
 class PackageFactory<TState, TView>{
 
@@ -50,7 +52,9 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     'flux-builder': new PackageFactory(FluxBuilderState,FluxBuilderView),
     'flux-runner': new PackageFactory(FluxRunnerState,FluxRunnerView),
     'network': new PackageFactory(NetworkState, NetworkView),
-    'network-backend': new PackageFactory(NetworkBackendState, NetworkBackendView)
+    'network-backend': new PackageFactory(NetworkBackendState, NetworkBackendView),
+    'stories': new PackageFactory(StoriesState, StoriesView),
+    'stories-backend': new PackageFactory(StoriesBackendState, StoriesBackendView),
 }
 
 
