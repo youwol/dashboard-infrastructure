@@ -26,6 +26,7 @@ import { NetworkRouter } from "../network/router";
 import { NetworkBackendRouter } from "../network-backend/router";
 import { StoriesBackendRouter } from "../stories-backend/router";
 import { StoriesRouter } from "../stories/router";
+import { ExhibitionHallsRouter } from "../exhibition-halls/router";
 
 export function createObservableFromFetch( request, extractFct = (d) =>d ){
 
@@ -86,6 +87,7 @@ export class Backend {
         NetworkBackendRouter.headers=headers
         StoriesRouter.headers = headers
         StoriesBackendRouter.headers = headers
+        ExhibitionHallsRouter.headers = headers
     }
 
     private static webSocket$ : ReplaySubject<any>

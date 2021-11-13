@@ -63,5 +63,6 @@ export let tabsDisplayInfo = {
     [PanelId.NetworkBackendGeneral]: { title: "General", enabled: true}
     [PanelId.StoriesGeneral]: { title: "General", enabled: true },
     [PanelId.StoriesBackendGeneral]: { title: "General", enabled: true },
+    [PanelId.ExhibitionHallsGeneral]: { title: "General", enabled: true }
 }
 

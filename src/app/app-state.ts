@@ -26,6 +26,7 @@ import { WorkspaceExplorerState, WorkspaceExplorerView } from "./workspace-explo
 import { NetworkBackendState, NetworkBackendView } from "./network-backend/view"
 import { StoriesBackendState, StoriesBackendView } from "./stories-backend/view"
 import { StoriesState, StoriesView } from "./stories/view"
+import { ExhibitionHallsState, ExhibitionHallsView } from "./exhibition-halls/view"
 
 class PackageFactory<TState, TView>{
 
@@ -55,6 +56,7 @@ let packagesFactory: {[key:string]: PackageFactory<unknown, unknown>} = {
     'network-backend': new PackageFactory(NetworkBackendState, NetworkBackendView),
     'stories': new PackageFactory(StoriesState, StoriesView),
     'stories-backend': new PackageFactory(StoriesBackendState, StoriesBackendView),
+    'exhibition-halls': new PackageFactory(ExhibitionHallsState, ExhibitionHallsView),
 }
 
 
