@@ -16,12 +16,12 @@
     "author": "",
     "license": "",
     "dependencies": {
-        "@youwol/flux-view": "0.x",
-        "@youwol/fv-button": "0.x",
-        "@youwol/fv-group": "0.x",
-        "@youwol/fv-input": "0.x",
-        "@youwol/fv-tabs": "0.x",
-        "@youwol/fv-tree": "0.x",
+        "@youwol/flux-view": "^0.0.11",
+        "@youwol/fv-button": "^0.0.3",
+        "@youwol/fv-group": "^0.0.5",
+        "@youwol/fv-input": "^0.0.5",
+        "@youwol/fv-tabs": "^0.0.2",
+        "@youwol/fv-tree": "^0.0.5",
         "lodash": "4.17.15",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5"
@@ -48,5 +48,23 @@
         "webpack-bundle-analyzer": "^4.4.0",
         "webpack-cli": "4.6.0",
         "webpack-dev-server": "3.11.2"
+    },
+    "youwol": {
+        "type": "application", 
+        "pipeline": {
+            "name": "yw_pipeline_webpack_ts",
+            "version": "0.0.0"
+        },
+        "cdnDependencies": {
+            "@youwol/flux-view": "^0.0.11",
+            "@youwol/fv-button": "^0.0.3",
+            "@youwol/fv-group": "^0.0.5",
+            "@youwol/fv-input": "^0.0.5",
+            "@youwol/fv-tabs": "^0.0.2",
+            "@youwol/fv-tree": "^0.0.5",
+            "lodash": "4.17.15",
+            "reflect-metadata": "0.1.13",
+            "rxjs": "6.5.5"
+        }
     }
 }
