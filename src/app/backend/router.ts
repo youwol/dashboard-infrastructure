@@ -27,6 +27,7 @@ import { NetworkBackendRouter } from "../network-backend/router";
 import { StoriesBackendRouter } from "../stories-backend/router";
 import { StoriesRouter } from "../stories/router";
 import { ExhibitionHallsRouter } from "../exhibition-halls/router";
+import { CdnAppsServerRouter } from "../cdn-apps-server/cdn.router";
 
 export function createObservableFromFetch(request, extractFct = (d) => d) {
 
@@ -74,6 +75,7 @@ export class Backend {
         StorageRouter.headers = headers
         RedisRouter.headers = headers
         CDNRouter.headers = headers
+        CdnAppsServerRouter.headers = headers
         TreeDbBackendRouter.headers = headers
         AssetsBackendRouter.headers = headers
         KeycloakRouter.headers = headers
@@ -105,6 +107,7 @@ export class Backend {
     static storage = StorageRouter
     static redis = RedisRouter
     static cdn = CDNRouter
+    static cdnAppServer = CdnAppsServerRouter
     static keycloak = KeycloakRouter
     static treedb = TreeDbBackendRouter
     static assetsBackend = AssetsBackendRouter

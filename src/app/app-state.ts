@@ -27,6 +27,7 @@ import { NetworkBackendState, NetworkBackendView } from "./network-backend/view"
 import { StoriesBackendState, StoriesBackendView } from "./stories-backend/view"
 import { StoriesState, StoriesView } from "./stories/view"
 import { ExhibitionHallsState, ExhibitionHallsView } from "./exhibition-halls/view"
+import { CdnAppsServerState, CdnAppsServerView } from "./cdn-apps-server/cdn.view"
 
 class PackageFactory<TState, TView>{
 
@@ -43,6 +44,7 @@ let packagesFactory: { [key: string]: PackageFactory<unknown, unknown> } = {
     docdb: new PackageFactory(DocDbState, DocDbView),
     storage: new PackageFactory(StorageState, StorageView),
     'cdn-backend': new PackageFactory(CDNState, CDNView),
+    'cdn-apps-server': new PackageFactory(CdnAppsServerState, CdnAppsServerView),
     'treedb-backend': new PackageFactory(TreeDbBackendState, TreeDbBackendView),
     'assets-backend': new PackageFactory(AssetsBackendState, AssetsBackendView),
     'assets-gateway': new PackageFactory(AssetsGatewayState, AssetsGatewayView),
