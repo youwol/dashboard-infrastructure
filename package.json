@@ -1,6 +1,6 @@
 {
     "name": "@youwol/dashboard-infra",
-    "version": "0.0.1",
+    "version": "0.0.1-next",
     "description": "Dashboard for managing infrastructure of YouWol",
     "main": "dist/index.html",
     "scripts": {
